@@ -9,9 +9,13 @@
 /* Begin PBXBuildFile section */
 		93EE489D2F536E31002EA052 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE48922F536E31002EA052 /* AppDelegate.swift */; };
 		93EE489E2F536E31002EA052 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE48932F536E31002EA052 /* SceneDelegate.swift */; };
-		93EE489F2F536E31002EA052 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE489B2F536E31002EA052 /* ViewController.swift */; };
+		93EE489F2F536E31002EA052 /* AuthorizationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE489B2F536E31002EA052 /* AuthorizationViewController.swift */; };
 		93EE48A02F536E31002EA052 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93EE48952F536E31002EA052 /* Assets.xcassets */; };
 		93EE48A22F536E31002EA052 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 93EE48982F536E31002EA052 /* LaunchScreen.storyboard */; };
+		93EE48AD2F537C54002EA052 /* AuthorizationPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE48AC2F537C52002EA052 /* AuthorizationPresenter.swift */; };
+		93EE48AF2F537D69002EA052 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93EE48AE2F537D69002EA052 /* Colors.xcassets */; };
+		93EE48B32F537FA0002EA052 /* View+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE48B22F537F9A002EA052 /* View+Extensions.swift */; };
+		93EE48B52F537FCF002EA052 /* prepareForAutoLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE48B42F537FC3002EA052 /* prepareForAutoLayout.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,7 +25,11 @@
 		93EE48952F536E31002EA052 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		93EE48962F536E31002EA052 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		93EE48972F536E31002EA052 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		93EE489B2F536E31002EA052 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		93EE489B2F536E31002EA052 /* AuthorizationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationViewController.swift; sourceTree = "<group>"; };
+		93EE48AC2F537C52002EA052 /* AuthorizationPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationPresenter.swift; sourceTree = "<group>"; };
+		93EE48AE2F537D69002EA052 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
+		93EE48B22F537F9A002EA052 /* View+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Extensions.swift"; sourceTree = "<group>"; };
+		93EE48B42F537FC3002EA052 /* prepareForAutoLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = prepareForAutoLayout.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +73,8 @@
 			children = (
 				93EE48942F536E31002EA052 /* Application */,
 				93EE48A52F536F55002EA052 /* Modules */,
+				93EE48B02F537F79002EA052 /* Extensions */,
+				93EE48B12F537F8A002EA052 /* Helpers */,
 				93EE48A42F536E39002EA052 /* SupportingFiles */,
 			);
 			path = PurelyInteresting;
@@ -73,9 +83,10 @@
 		93EE48A42F536E39002EA052 /* SupportingFiles */ = {
 			isa = PBXGroup;
 			children = (
-				93EE48962F536E31002EA052 /* Info.plist */,
 				93EE48952F536E31002EA052 /* Assets.xcassets */,
+				93EE48AE2F537D69002EA052 /* Colors.xcassets */,
 				93EE48982F536E31002EA052 /* LaunchScreen.storyboard */,
+				93EE48962F536E31002EA052 /* Info.plist */,
 			);
 			path = SupportingFiles;
 			sourceTree = "<group>";
@@ -83,9 +94,58 @@
 		93EE48A52F536F55002EA052 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
-				93EE489B2F536E31002EA052 /* ViewController.swift */,
+				93EE48A82F537A94002EA052 /* AuthorizationModule */,
 			);
 			path = Modules;
+			sourceTree = "<group>";
+		};
+		93EE48A82F537A94002EA052 /* AuthorizationModule */ = {
+			isa = PBXGroup;
+			children = (
+				93EE48AB2F537AB6002EA052 /* Model */,
+				93EE48AA2F537AAF002EA052 /* View */,
+				93EE48A92F537AA7002EA052 /* Presenter */,
+			);
+			path = AuthorizationModule;
+			sourceTree = "<group>";
+		};
+		93EE48A92F537AA7002EA052 /* Presenter */ = {
+			isa = PBXGroup;
+			children = (
+				93EE48AC2F537C52002EA052 /* AuthorizationPresenter.swift */,
+			);
+			path = Presenter;
+			sourceTree = "<group>";
+		};
+		93EE48AA2F537AAF002EA052 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				93EE489B2F536E31002EA052 /* AuthorizationViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		93EE48AB2F537AB6002EA052 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		93EE48B02F537F79002EA052 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				93EE48B22F537F9A002EA052 /* View+Extensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		93EE48B12F537F8A002EA052 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				93EE48B42F537FC3002EA052 /* prepareForAutoLayout.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -149,6 +209,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93EE48AF2F537D69002EA052 /* Colors.xcassets in Resources */,
 				93EE48A02F536E31002EA052 /* Assets.xcassets in Resources */,
 				93EE48A22F536E31002EA052 /* LaunchScreen.storyboard in Resources */,
 			);
@@ -161,9 +222,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93EE48AD2F537C54002EA052 /* AuthorizationPresenter.swift in Sources */,
 				93EE489D2F536E31002EA052 /* AppDelegate.swift in Sources */,
+				93EE48B52F537FCF002EA052 /* prepareForAutoLayout.swift in Sources */,
 				93EE489E2F536E31002EA052 /* SceneDelegate.swift in Sources */,
-				93EE489F2F536E31002EA052 /* ViewController.swift in Sources */,
+				93EE48B32F537FA0002EA052 /* View+Extensions.swift in Sources */,
+				93EE489F2F536E31002EA052 /* AuthorizationViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
