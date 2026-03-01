@@ -112,7 +112,7 @@ extension MainScreenViewController: UITableViewDelegate {
         _ tableView: UITableView,
         didSelectRowAt indexPath: IndexPath
     ) {
-        // TODO: - Передать в presenter
+        presenter?.didSelectChat(at: indexPath.row)
     }
 }
 
