@@ -37,6 +37,15 @@
 		93EE48F32F548A16002EA052 /* MainTabBarCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE48F22F548A14002EA052 /* MainTabBarCoordinator.swift */; };
 		93EE48F52F548A29002EA052 /* MainScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE48F42F548A28002EA052 /* MainScreenCoordinator.swift */; };
 		93EE48F72F548A81002EA052 /* PlaceholderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE48F62F548A7A002EA052 /* PlaceholderViewController.swift */; };
+		93EE48FD2F5497AB002EA052 /* UrlComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE48FC2F5497A5002EA052 /* UrlComponents.swift */; };
+		93EE48FF2F5497C7002EA052 /* AuthModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE48FE2F5497C5002EA052 /* AuthModels.swift */; };
+		93EE49012F5497DA002EA052 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE49002F5497D6002EA052 /* NetworkService.swift */; };
+		93EE49032F5497F1002EA052 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE49022F5497EF002EA052 /* KeychainService.swift */; };
+		93EE49052F549806002EA052 /* WebSocketService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE49042F549805002EA052 /* WebSocketService.swift */; };
+		93EE49072F549833002EA052 /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE49062F54982C002EA052 /* TokenManager.swift */; };
+		93EE490B2F54986A002EA052 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE490A2F549868002EA052 /* AuthService.swift */; };
+		93EE490D2F549883002EA052 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE490C2F54987B002EA052 /* APIClient.swift */; };
+		93EE490F2F54989F002EA052 /* ServiceAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE490E2F549893002EA052 /* ServiceAssembly.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -72,6 +81,15 @@
 		93EE48F22F548A14002EA052 /* MainTabBarCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarCoordinator.swift; sourceTree = "<group>"; };
 		93EE48F42F548A28002EA052 /* MainScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenCoordinator.swift; sourceTree = "<group>"; };
 		93EE48F62F548A7A002EA052 /* PlaceholderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderViewController.swift; sourceTree = "<group>"; };
+		93EE48FC2F5497A5002EA052 /* UrlComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlComponents.swift; sourceTree = "<group>"; };
+		93EE48FE2F5497C5002EA052 /* AuthModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModels.swift; sourceTree = "<group>"; };
+		93EE49002F5497D6002EA052 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
+		93EE49022F5497EF002EA052 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
+		93EE49042F549805002EA052 /* WebSocketService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketService.swift; sourceTree = "<group>"; };
+		93EE49062F54982C002EA052 /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
+		93EE490A2F549868002EA052 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		93EE490C2F54987B002EA052 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		93EE490E2F549893002EA052 /* ServiceAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceAssembly.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +132,7 @@
 			isa = PBXGroup;
 			children = (
 				93EE48942F536E31002EA052 /* Application */,
+				93EE48F82F549758002EA052 /* Services */,
 				93EE48E82F548967002EA052 /* Coordinator */,
 				93EE48E72F54895A002EA052 /* Builder */,
 				93EE48A52F536F55002EA052 /* Modules */,
@@ -347,6 +366,46 @@
 			path = MainCoordinators;
 			sourceTree = "<group>";
 		};
+		93EE48F82F549758002EA052 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				93EE48FB2F549788002EA052 /* WebSocketManager */,
+				93EE48FA2F549772002EA052 /* KeychainService */,
+				93EE48F92F54975E002EA052 /* NetworkService */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		93EE48F92F54975E002EA052 /* NetworkService */ = {
+			isa = PBXGroup;
+			children = (
+				93EE490E2F549893002EA052 /* ServiceAssembly.swift */,
+				93EE490C2F54987B002EA052 /* APIClient.swift */,
+				93EE490A2F549868002EA052 /* AuthService.swift */,
+				93EE49062F54982C002EA052 /* TokenManager.swift */,
+				93EE49002F5497D6002EA052 /* NetworkService.swift */,
+				93EE48FE2F5497C5002EA052 /* AuthModels.swift */,
+				93EE48FC2F5497A5002EA052 /* UrlComponents.swift */,
+			);
+			path = NetworkService;
+			sourceTree = "<group>";
+		};
+		93EE48FA2F549772002EA052 /* KeychainService */ = {
+			isa = PBXGroup;
+			children = (
+				93EE49022F5497EF002EA052 /* KeychainService.swift */,
+			);
+			path = KeychainService;
+			sourceTree = "<group>";
+		};
+		93EE48FB2F549788002EA052 /* WebSocketManager */ = {
+			isa = PBXGroup;
+			children = (
+				93EE49042F549805002EA052 /* WebSocketService.swift */,
+			);
+			path = WebSocketManager;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -429,16 +488,23 @@
 				93EE48EA2F54898D002EA052 /* BaseCoordinator.swift in Sources */,
 				93EE489D2F536E31002EA052 /* AppDelegate.swift in Sources */,
 				93EE48EE2F5489B5002EA052 /* AppCoordinator.swift in Sources */,
+				93EE490D2F549883002EA052 /* APIClient.swift in Sources */,
 				93EE48BB2F54637A002EA052 /* MainScreenViewController.swift in Sources */,
+				93EE49052F549806002EA052 /* WebSocketService.swift in Sources */,
 				93EE48D82F547F48002EA052 /* ChatView.swift in Sources */,
+				93EE49012F5497DA002EA052 /* NetworkService.swift in Sources */,
 				93EE48B52F537FCF002EA052 /* prepareForAutoLayout.swift in Sources */,
+				93EE48FF2F5497C7002EA052 /* AuthModels.swift in Sources */,
+				93EE48FD2F5497AB002EA052 /* UrlComponents.swift in Sources */,
 				93EE48F32F548A16002EA052 /* MainTabBarCoordinator.swift in Sources */,
 				93EE48F52F548A29002EA052 /* MainScreenCoordinator.swift in Sources */,
 				93EE48DA2F547F66002EA052 /* ChatNavigationBarView.swift in Sources */,
 				93EE48C82F546A1C002EA052 /* ChatCell.swift in Sources */,
 				93EE489E2F536E31002EA052 /* SceneDelegate.swift in Sources */,
+				93EE490F2F54989F002EA052 /* ServiceAssembly.swift in Sources */,
 				93EE48B32F537FA0002EA052 /* View+Extensions.swift in Sources */,
 				93EE48C42F5469DC002EA052 /* MainScreenView.swift in Sources */,
+				93EE49072F549833002EA052 /* TokenManager.swift in Sources */,
 				93EE48D52F547F11002EA052 /* ChatViewController.swift in Sources */,
 				93EE48E02F547FB6002EA052 /* ChatPresenter.swift in Sources */,
 				93EE489F2F536E31002EA052 /* AuthorizationViewController.swift in Sources */,
@@ -447,6 +513,8 @@
 				93EE48DC2F547F88002EA052 /* ChatEmptyStateView.swift in Sources */,
 				93EE48C12F5466A3002EA052 /* MockData.swift in Sources */,
 				93EE48F12F548A01002EA052 /* AuthCoordinator.swift in Sources */,
+				93EE490B2F54986A002EA052 /* AuthService.swift in Sources */,
+				93EE49032F5497F1002EA052 /* KeychainService.swift in Sources */,
 				93EE48DE2F547FA1002EA052 /* MessageInputView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
