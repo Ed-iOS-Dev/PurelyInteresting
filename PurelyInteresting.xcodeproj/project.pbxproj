@@ -120,7 +120,6 @@
 		93EE48A52F536F55002EA052 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
-				93EE48C92F546F93002EA052 /* TabBarModule */,
 				93EE48A82F537A94002EA052 /* AuthorizationModule */,
 				93EE48B62F546345002EA052 /* MainScreenModule */,
 				93EE48CF2F547EBE002EA052 /* ChatModule */,
@@ -376,7 +375,6 @@
 				93EE48DA2F547F66002EA052 /* ChatNavigationBarView.swift in Sources */,
 				93EE48C82F546A1C002EA052 /* ChatCell.swift in Sources */,
 				93EE489E2F536E31002EA052 /* SceneDelegate.swift in Sources */,
-				93EE48CE2F547B09002EA052 /* MainTabBarController.swift in Sources */,
 				93EE48B32F537FA0002EA052 /* View+Extensions.swift in Sources */,
 				93EE48C42F5469DC002EA052 /* MainScreenView.swift in Sources */,
 				93EE48D52F547F11002EA052 /* ChatViewController.swift in Sources */,
