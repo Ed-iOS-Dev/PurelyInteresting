@@ -11,9 +11,18 @@ import Foundation
 
 protocol APIClientProtocol: AnyObject {
     
-    /// Выполняет авторизованный запрос с автоматическим refresh при 401
+    /// Авторизованный запрос по URLQueries
     func authorizedRequest(
         query: URLQueries,
+        httpMethodType: HttpMethodType,
+        parameters: [String: Any]?,
+        inQueryParameters: [String: Any]?,
+        completion: @escaping (Result<Data, Error>) -> Void
+    )
+    
+    /// Авторизованный запрос по произвольному path
+    func authorizedRequest(
+        path: String,
         httpMethodType: HttpMethodType,
         parameters: [String: Any]?,
         inQueryParameters: [String: Any]?,
@@ -49,13 +58,29 @@ final class APIClient: APIClientProtocol {
         inQueryParameters: [String: Any]? = nil,
         completion: @escaping (Result<Data, Error>) -> Void
     ) {
+        authorizedRequest(
+            path: query.rawValue,
+            httpMethodType: httpMethodType,
+            parameters: parameters,
+            inQueryParameters: inQueryParameters,
+            completion: completion
+        )
+    }
+    
+    func authorizedRequest(
+        path: String,
+        httpMethodType: HttpMethodType,
+        parameters: [String: Any]? = nil,
+        inQueryParameters: [String: Any]? = nil,
+        completion: @escaping (Result<Data, Error>) -> Void
+    ) {
         guard let token = tokenManager.accessToken else {
             completion(.failure(NetworkError.unauthorized))
             return
         }
         
         performRequest(
-            query: query,
+            path: path,
             httpMethodType: httpMethodType,
             token: token,
             parameters: parameters,
@@ -75,7 +100,7 @@ final class APIClient: APIClientProtocol {
                 }
                 
                 self.retryAfterRefresh(
-                    query: query,
+                    path: path,
                     httpMethodType: httpMethodType,
                     parameters: parameters,
                     inQueryParameters: inQueryParameters,
@@ -88,7 +113,7 @@ final class APIClient: APIClientProtocol {
     // MARK: - Private Methods
     
     private func performRequest(
-        query: URLQueries,
+        path: String,
         httpMethodType: HttpMethodType,
         token: String,
         parameters: [String: Any]?,
@@ -97,7 +122,7 @@ final class APIClient: APIClientProtocol {
     ) {
         networkService.sendRequest(
             baseURL: .baseUrl,
-            query: query,
+            path: path,
             httpMethodType: httpMethodType,
             token: token,
             contentType: .json,
@@ -108,7 +133,7 @@ final class APIClient: APIClientProtocol {
     }
     
     private func retryAfterRefresh(
-        query: URLQueries,
+        path: String,
         httpMethodType: HttpMethodType,
         parameters: [String: Any]?,
         inQueryParameters: [String: Any]?,
@@ -120,7 +145,7 @@ final class APIClient: APIClientProtocol {
             switch refreshResult {
             case .success(let newToken):
                 self.performRequest(
-                    query: query,
+                    path: path,
                     httpMethodType: httpMethodType,
                     token: newToken,
                     parameters: parameters,

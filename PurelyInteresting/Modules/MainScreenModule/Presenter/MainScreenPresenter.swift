@@ -11,7 +11,11 @@ import Foundation
 
 protocol MainScreenPresenterProtocol: AnyObject {
     
+    var chatItems: [ChatItem] { get }
+    
+    func viewDidLoad()
     func didSelectChat(at index: Int)
+    func refreshChats()
 }
 
 // MARK: - MainScreenPresenter
@@ -21,30 +25,83 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
     // MARK: - Properties
     
     weak var view: MainScreenViewProtocol?
-    private let coordinator: MainScreenCoordinator
     
-    private let chatItems = MockData.chatItems
+    private(set) var chatItems: [ChatItem] = []
+    
+    private let coordinator: MainScreenCoordinator
+    private let chatService: ChatServiceProtocol
+    
+    private var currentUserId: Int?
+    private var chatDTOs: [ChatDTO] = []
     
     // MARK: - Initializers
     
-    init(view: MainScreenViewProtocol, coordinator: MainScreenCoordinator) {
+    init(
+        view: MainScreenViewProtocol,
+        coordinator: MainScreenCoordinator,
+        chatService: ChatServiceProtocol
+    ) {
         self.view = view
         self.coordinator = coordinator
+        self.chatService = chatService
     }
     
     // MARK: - Public Methods
     
+    func viewDidLoad() {
+        loadChats()
+    }
+    
     func didSelectChat(at index: Int) {
-        let item = chatItems[index]
+        guard index < chatDTOs.count else { return }
         
-        let chatUser = ChatUser(
-            username: item.username,
-            avatarImage: item.avatarImage,
-            lastSeenStatus: item.lastMessage,
-            subscriptionStatus: "Вы подписаны друг на друга",
-            registrationDate: "Дата регистрации 5 мая 2024"
+        let dto = chatDTOs[index]
+        let chatUser = dto.toChatUser()
+        
+        coordinator.moveToChatScreen(
+            chatUser: chatUser,
+            chatId: dto.id,
+            otherUserId: dto.otherUser?.id
         )
+    }
+    
+    func refreshChats() {
+        loadChats()
+    }
+    
+    // MARK: - Private Methods
+    
+    private func loadChats() {
+        view?.showLoading()
         
-        coordinator.moveToChatScreen(chatUser: chatUser)
+        chatService.fetchChats(
+            isInbox: true,
+            offset: 0,
+            limit: 20
+        ) { [weak self] result in
+            guard let self else { return }
+            
+            self.view?.hideLoading()
+            
+            switch result {
+            case .success(let response):
+                self.chatDTOs = response.chats
+                self.chatItems = response.chats.map {
+                    $0.toChatItem(currentUserId: self.currentUserId)
+                }
+                self.view?.reloadChats()
+                
+            case .failure(let error):
+                self.handleError(error)
+            }
+        }
+    }
+    
+    private func handleError(_ error: Error) {
+        if case NetworkError.unauthorized = error {
+            view?.showError("Сессия истекла. Войдите заново.")
+        } else {
+            view?.showError("Не удалось загрузить чаты")
+        }
     }
 }

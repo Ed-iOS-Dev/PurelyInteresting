@@ -43,13 +43,16 @@ final class AppBuilder {
         let view = MainScreenViewController()
         let presenter = MainScreenPresenter(
             view: view,
-            coordinator: coordinator
+            coordinator: coordinator,
+            chatService: ServiceAssembly.shared.chatService
         )
         view.presenter = presenter
         view.tabBarItem = UITabBarItem(
             title: Constants.messagesTabBarTitle,
             image: UIImage(systemName: "bubble.left.and.bubble.right"),
-            selectedImage: UIImage(systemName: "bubble.left.and.bubble.right.fill")
+            selectedImage: UIImage(
+                systemName: "bubble.left.and.bubble.right.fill"
+            )
         )
         
         return view
@@ -59,12 +62,17 @@ final class AppBuilder {
     
     func makeChatModule(
         coordinator: MainScreenCoordinator,
-        chatUser: ChatUser
+        chatUser: ChatUser,
+        chatId: Int,
+        otherUserId: Int?
     ) -> ChatViewController {
         let view = ChatViewController(chatUser: chatUser)
         let presenter = ChatPresenter(
             view: view,
-            coordinator: coordinator
+            coordinator: coordinator,
+            chatService: ServiceAssembly.shared.chatService,
+            chatId: chatId,
+            otherUserId: otherUserId
         )
         view.presenter = presenter
         
@@ -96,7 +104,9 @@ final class AppBuilder {
     }
     
     func makeProfileModule() -> UIViewController {
-        let view = PlaceholderViewController(title: Constants.profileTabBarTitle)
+        let view = PlaceholderViewController(
+            title: Constants.profileTabBarTitle
+        )
         view.tabBarItem = UITabBarItem(
             title: Constants.profileTabBarTitle,
             image: UIImage(systemName: "person.circle"),
