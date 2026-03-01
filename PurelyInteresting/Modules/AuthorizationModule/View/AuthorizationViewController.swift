@@ -140,11 +140,11 @@ final class AuthorizationViewController: UIViewController {
     // MARK: - @objc Methods
     
     @objc private func loginButtonTapped() {
-        // TODO: - Передать в presenter
+        presenter?.loginButtonTapped()
     }
     
     @objc private func registerButtonTapped() {
-        // TODO: - Передать в presenter
+        presenter?.registerButtonTapped()
     }
 }
 

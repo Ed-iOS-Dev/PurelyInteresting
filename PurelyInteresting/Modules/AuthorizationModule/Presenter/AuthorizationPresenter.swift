@@ -9,15 +9,35 @@ import Foundation
 
 // MARK: - AuthorizationPresenterProtocol
 
-protocol AuthorizationPresenterProtocol: AnyObject {}
+protocol AuthorizationPresenterProtocol: AnyObject {
+    
+    func loginButtonTapped()
+    func registerButtonTapped()
+}
 
 // MARK: - AuthorizationPresenter
 
 final class AuthorizationPresenter: AuthorizationPresenterProtocol {
     
-    weak var view: AuthorizationViewProtocol?
+    // MARK: - Properties
     
-    init(view: AuthorizationViewProtocol) {
+    weak var view: AuthorizationViewProtocol?
+    private let coordinator: AuthCoordinator
+    
+    // MARK: - Initializers
+    
+    init(view: AuthorizationViewProtocol, coordinator: AuthCoordinator) {
         self.view = view
+        self.coordinator = coordinator
+    }
+    
+    // MARK: - Public Methods
+    
+    func loginButtonTapped() {
+        coordinator.moveToMainScreen()
+    }
+    
+    func registerButtonTapped() {
+        // TODO: - Реализация регистрации
     }
 }

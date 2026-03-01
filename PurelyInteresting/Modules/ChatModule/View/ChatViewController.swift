@@ -30,6 +30,8 @@ final class ChatViewController: UIViewController {
     init(chatUser: ChatUser) {
         self.chatUser = chatUser
         super.init(nibName: nil, bundle: nil)
+        
+        hidesBottomBarWhenPushed = true
     }
     
     required init?(coder: NSCoder) {
@@ -140,7 +142,7 @@ final class ChatViewController: UIViewController {
     }
     
     @objc private func viewProfileTapped() {
-        // TODO: - Передать в presenter
+        presenter?.viewProfileTapped()
     }
     
     @objc private func dismissKeyboard() {
@@ -196,7 +198,7 @@ extension ChatViewController: MessageInputViewDelegate {
         _ view: MessageInputView,
         didSendMessage text: String
     ) {
-        // TODO: - Передать в presenter
+        presenter?.sendMessage(text)
     }
 }
 
