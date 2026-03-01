@@ -14,8 +14,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
         
-        let viewController = AuthorizationViewController()
-        let presenter = AuthorizationPresenter(view: viewController)
+        let viewController = MainScreenViewController()
+        let presenter = MainScreenPresenter(view: viewController)
         viewController.presenter = presenter
         
         let navigationController = UINavigationController(
