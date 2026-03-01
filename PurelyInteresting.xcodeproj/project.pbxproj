@@ -16,6 +16,12 @@
 		93EE48AF2F537D69002EA052 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93EE48AE2F537D69002EA052 /* Colors.xcassets */; };
 		93EE48B32F537FA0002EA052 /* View+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE48B22F537F9A002EA052 /* View+Extensions.swift */; };
 		93EE48B52F537FCF002EA052 /* prepareForAutoLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE48B42F537FC3002EA052 /* prepareForAutoLayout.swift */; };
+		93EE48BB2F54637A002EA052 /* MainScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE48BA2F54636F002EA052 /* MainScreenViewController.swift */; };
+		93EE48BD2F54647F002EA052 /* MainScreenPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE48BC2F54647E002EA052 /* MainScreenPresenter.swift */; };
+		93EE48BF2F546494002EA052 /* MainScreenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE48BE2F54648D002EA052 /* MainScreenModel.swift */; };
+		93EE48C12F5466A3002EA052 /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE48C02F54669D002EA052 /* MockData.swift */; };
+		93EE48C42F5469DC002EA052 /* MainScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE48C32F5469DB002EA052 /* MainScreenView.swift */; };
+		93EE48C82F546A1C002EA052 /* ChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE48C72F546A19002EA052 /* ChatCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +36,12 @@
 		93EE48AE2F537D69002EA052 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		93EE48B22F537F9A002EA052 /* View+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Extensions.swift"; sourceTree = "<group>"; };
 		93EE48B42F537FC3002EA052 /* prepareForAutoLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = prepareForAutoLayout.swift; sourceTree = "<group>"; };
+		93EE48BA2F54636F002EA052 /* MainScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenViewController.swift; sourceTree = "<group>"; };
+		93EE48BC2F54647E002EA052 /* MainScreenPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenPresenter.swift; sourceTree = "<group>"; };
+		93EE48BE2F54648D002EA052 /* MainScreenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenModel.swift; sourceTree = "<group>"; };
+		93EE48C02F54669D002EA052 /* MockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
+		93EE48C32F5469DB002EA052 /* MainScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenView.swift; sourceTree = "<group>"; };
+		93EE48C72F546A19002EA052 /* ChatCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +107,7 @@
 			isa = PBXGroup;
 			children = (
 				93EE48A82F537A94002EA052 /* AuthorizationModule */,
+				93EE48B62F546345002EA052 /* MainScreenModule */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -146,6 +159,67 @@
 				93EE48B42F537FC3002EA052 /* prepareForAutoLayout.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		93EE48B62F546345002EA052 /* MainScreenModule */ = {
+			isa = PBXGroup;
+			children = (
+				93EE48B92F546366002EA052 /* Model */,
+				93EE48B82F546361002EA052 /* View */,
+				93EE48B72F54635A002EA052 /* Presenter */,
+			);
+			path = MainScreenModule;
+			sourceTree = "<group>";
+		};
+		93EE48B72F54635A002EA052 /* Presenter */ = {
+			isa = PBXGroup;
+			children = (
+				93EE48BC2F54647E002EA052 /* MainScreenPresenter.swift */,
+			);
+			path = Presenter;
+			sourceTree = "<group>";
+		};
+		93EE48B82F546361002EA052 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				93EE48BA2F54636F002EA052 /* MainScreenViewController.swift */,
+				93EE48C22F546994002EA052 /* Views */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		93EE48B92F546366002EA052 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				93EE48C02F54669D002EA052 /* MockData.swift */,
+				93EE48BE2F54648D002EA052 /* MainScreenModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		93EE48C22F546994002EA052 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				93EE48C32F5469DB002EA052 /* MainScreenView.swift */,
+				93EE48C52F546A00002EA052 /* MainScreenSubviews */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		93EE48C52F546A00002EA052 /* MainScreenSubviews */ = {
+			isa = PBXGroup;
+			children = (
+				93EE48C62F546A12002EA052 /* TableView */,
+			);
+			path = MainScreenSubviews;
+			sourceTree = "<group>";
+		};
+		93EE48C62F546A12002EA052 /* TableView */ = {
+			isa = PBXGroup;
+			children = (
+				93EE48C72F546A19002EA052 /* ChatCell.swift */,
+			);
+			path = TableView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -223,11 +297,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				93EE48AD2F537C54002EA052 /* AuthorizationPresenter.swift in Sources */,
+				93EE48BD2F54647F002EA052 /* MainScreenPresenter.swift in Sources */,
 				93EE489D2F536E31002EA052 /* AppDelegate.swift in Sources */,
+				93EE48BB2F54637A002EA052 /* MainScreenViewController.swift in Sources */,
 				93EE48B52F537FCF002EA052 /* prepareForAutoLayout.swift in Sources */,
+				93EE48C82F546A1C002EA052 /* ChatCell.swift in Sources */,
 				93EE489E2F536E31002EA052 /* SceneDelegate.swift in Sources */,
 				93EE48B32F537FA0002EA052 /* View+Extensions.swift in Sources */,
+				93EE48C42F5469DC002EA052 /* MainScreenView.swift in Sources */,
 				93EE489F2F536E31002EA052 /* AuthorizationViewController.swift in Sources */,
+				93EE48BF2F546494002EA052 /* MainScreenModel.swift in Sources */,
+				93EE48C12F5466A3002EA052 /* MockData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
