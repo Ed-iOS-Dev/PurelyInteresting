@@ -9,7 +9,12 @@ import UIKit
 
 // MARK: - AuthorizationViewProtocol
 
-protocol AuthorizationViewProtocol: AnyObject {}
+protocol AuthorizationViewProtocol: AnyObject {
+    
+    func showLoading(_ isLoading: Bool)
+    func showError(message: String)
+    func updateStatus(message: String)
+}
 
 // MARK: - AuthorizationViewController
 
@@ -83,6 +88,25 @@ final class AuthorizationViewController: UIViewController {
         return label
     }()
     
+    private let activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.color = .white
+        indicator.hidesWhenStopped = true
+        
+        return indicator
+    }()
+    
+    private let statusLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 14, weight: .medium)
+        label.textColor = .textSecondary
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.isHidden = true
+        
+        return label
+    }()
+    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
@@ -108,6 +132,8 @@ final class AuthorizationViewController: UIViewController {
             logoImageView,
             titleLabel,
             subtitleLabel,
+            activityIndicator,
+            statusLabel,
             loginButton,
             registerButton,
             policyLabel
@@ -118,6 +144,8 @@ final class AuthorizationViewController: UIViewController {
         setupLogoImageViewConstraints()
         setupTitleLabelConstraints()
         setupSubtitleLabelConstraints()
+        setupActivityIndicatorConstraints()
+        setupStatusLabelConstraints()
         setupLoginButtonConstraints()
         setupRegisterButtonConstraints()
         setupPolicyLabelConstraints()
@@ -150,7 +178,44 @@ final class AuthorizationViewController: UIViewController {
 
 // MARK: - AuthorizationViewProtocol
 
-extension AuthorizationViewController: AuthorizationViewProtocol {}
+extension AuthorizationViewController: AuthorizationViewProtocol {
+    
+    func showLoading(_ isLoading: Bool) {
+        loginButton.isEnabled = !isLoading
+        registerButton.isEnabled = !isLoading
+        loginButton.alpha = isLoading ? .disabledAlpha : 1
+        registerButton.alpha = isLoading ? .disabledAlpha : 1
+        
+        if isLoading {
+            activityIndicator.startAnimating()
+        } else {
+            activityIndicator.stopAnimating()
+            statusLabel.isHidden = true
+        }
+    }
+    
+    func showError(message: String) {
+        let alert = UIAlertController(
+            title: .errorAlertTitle,
+            message: message,
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(
+            UIAlertAction(
+                title: .errorAlertAction,
+                style: .default
+            )
+        )
+        
+        present(alert, animated: true)
+    }
+    
+    func updateStatus(message: String) {
+        statusLabel.text = message
+        statusLabel.isHidden = false
+    }
+}
 
 // MARK: - Constraints
 
@@ -202,6 +267,35 @@ private extension AuthorizationViewController {
                 constant: .horizontalPadding
             ),
             subtitleLabel.trailingAnchor.constraint(
+                equalTo: view.trailingAnchor,
+                constant: -.horizontalPadding
+            )
+        ])
+    }
+    
+    func setupActivityIndicatorConstraints() {
+        NSLayoutConstraint.activate([
+            activityIndicator.topAnchor.constraint(
+                equalTo: subtitleLabel.bottomAnchor,
+                constant: .indicatorTopOffset
+            ),
+            activityIndicator.centerXAnchor.constraint(
+                equalTo: view.centerXAnchor
+            )
+        ])
+    }
+    
+    func setupStatusLabelConstraints() {
+        NSLayoutConstraint.activate([
+            statusLabel.topAnchor.constraint(
+                equalTo: activityIndicator.bottomAnchor,
+                constant: .statusTopOffset
+            ),
+            statusLabel.leadingAnchor.constraint(
+                equalTo: view.leadingAnchor,
+                constant: .horizontalPadding
+            ),
+            statusLabel.trailingAnchor.constraint(
                 equalTo: view.trailingAnchor,
                 constant: -.horizontalPadding
             )
@@ -275,11 +369,14 @@ private extension CGFloat {
     static let logoHeight: Self = 322
     static let titleTopOffset: Self = 40
     static let subtitleTopOffset: Self = 12
+    static let indicatorTopOffset: Self = 24
+    static let statusTopOffset: Self = 8
     static let buttonHeight: Self = 52
     static let buttonSpacing: Self = 12
     static let policyBottomOffset: Self = -16
     static let registerBottomOffset: Self = -24
     static let buttonCornerRadius: Self = 12
+    static let disabledAlpha: Self = 0.5
 }
 
 private extension String {
@@ -289,4 +386,6 @@ private extension String {
     static let loginButton = "Войти в приложение"
     static let registerButton = "Зарегистрироваться"
     static let policyText = "При входе или регистрации вы соглашаетесь\nс нашей Политикой использования"
+    static let errorAlertTitle = "Ошибка"
+    static let errorAlertAction = "Ок"
 }
