@@ -9,7 +9,13 @@ import UIKit
 
 // MARK: - MainScreenViewProtocol
 
-protocol MainScreenViewProtocol: AnyObject {}
+protocol MainScreenViewProtocol: AnyObject {
+    
+    func reloadChats()
+    func showLoading()
+    func hideLoading()
+    func showError(_ message: String)
+}
 
 // MARK: - MainScreenViewController
 
@@ -19,11 +25,15 @@ final class MainScreenViewController: UIViewController {
     
     var presenter: MainScreenPresenterProtocol?
     
-    private let chatItems = MockData.chatItems
-    
     // MARK: - Visual Components
     
     private let mainScreenView = MainScreenView()
+    
+    private let activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
     
     // MARK: - Lifecycle
     
@@ -35,15 +45,16 @@ final class MainScreenViewController: UIViewController {
         super.viewDidLoad()
         
         initialSetup()
+        presenter?.viewDidLoad()
     }
     
     // MARK: - Private Methods
     
     private func initialSetup() {
-        
         setupNavigationBar()
         setupTableView()
         setupActions()
+        setupActivityIndicator()
     }
     
     private func setupNavigationBar() {
@@ -85,6 +96,19 @@ final class MainScreenViewController: UIViewController {
         )
     }
     
+    private func setupActivityIndicator() {
+        view.addSubview(activityIndicator)
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            activityIndicator.centerXAnchor.constraint(
+                equalTo: view.centerXAnchor
+            ),
+            activityIndicator.centerYAnchor.constraint(
+                equalTo: view.centerYAnchor
+            )
+        ])
+    }
+    
     // MARK: - @objc Methods
     
     @objc private func usernameButtonTapped() {
@@ -124,15 +148,13 @@ extension MainScreenViewController: UITableViewDataSource {
         _ tableView: UITableView,
         numberOfRowsInSection section: Int
     ) -> Int {
-        
-        return chatItems.count
+        return presenter?.chatItems.count ?? 0
     }
     
     func tableView(
         _ tableView: UITableView,
         cellForRowAt indexPath: IndexPath
     ) -> UITableViewCell {
-        
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: ChatCell.identifier,
             for: indexPath
@@ -140,7 +162,9 @@ extension MainScreenViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.configure(with: chatItems[indexPath.row])
+        if let item = presenter?.chatItems[indexPath.row] {
+            cell.configure(with: item)
+        }
         
         return cell
     }
@@ -148,4 +172,29 @@ extension MainScreenViewController: UITableViewDataSource {
 
 // MARK: - MainScreenViewProtocol
 
-extension MainScreenViewController: MainScreenViewProtocol {}
+extension MainScreenViewController: MainScreenViewProtocol {
+    
+    func reloadChats() {
+        mainScreenView.chatsTableView.reloadData()
+    }
+    
+    func showLoading() {
+        activityIndicator.startAnimating()
+    }
+    
+    func hideLoading() {
+        activityIndicator.stopAnimating()
+    }
+    
+    func showError(_ message: String) {
+        let alert = UIAlertController(
+            title: "Ошибка",
+            message: message,
+            preferredStyle: .alert
+        )
+        alert.addAction(
+            UIAlertAction(title: "OK", style: .default)
+        )
+        present(alert, animated: true)
+    }
+}

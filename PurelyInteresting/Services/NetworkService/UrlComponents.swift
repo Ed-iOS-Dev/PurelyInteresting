@@ -19,17 +19,33 @@ public enum BaseUrlType: String {
 
 public enum URLQueries: String {
     
-    /// Получение анонимной сессии
+    // MARK: - Auth
+    
+    /// GET — Получение анонимной сессии
     case newSession = "/api/v1/auth/sessions/new"
     
-    /// Обновление JWT токена (POST, form-urlencoded)
+    /// POST — Обновление JWT токена (form-urlencoded)
     case refreshToken = "/api/v1/auth/jwt/refresh/new"
     
-    /// Получение профиля текущего пользователя
-    case myProfile = "/api/v1/my"
-    
-    /// WebSocket сессия авторизации (добавить /{session_id})
+    /// WebSocket сессия авторизации (+ /{session_id})
     case webSocketSession = "/api/v1/ws/ws/session/"
+    
+    // MARK: - Users
+    
+    /// GET — Профиль текущего пользователя
+    case myProfile = "/api/v1/users/my"
+    
+    // MARK: - Chats
+    
+    /// GET — Список чатов пользователя
+    case chats = "/api/v1/chats"
+    
+    /// GET — Детали чата (+ /{chat_id})
+    /// GET — Сообщения чата (+ /{chat_id}/messages)
+    case chatDetail = "/api/v1/chats/"
+    
+    /// POST — Отправка сообщения
+    case sendMessage = "/api/v1/chats/messages"
 }
 
 // MARK: - HttpMethodType

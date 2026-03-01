@@ -21,6 +21,18 @@ protocol NetworkServiceProtocol: AnyObject {
         inQueryParameters: [String: Any]?,
         completion: @escaping (Result<Data, Error>) -> Void
     )
+    
+    /// Запрос с произвольным path (для динамических URL вида /chats/{id}/messages)
+    func sendRequest(
+        baseURL: BaseUrlType,
+        path: String,
+        httpMethodType: HttpMethodType,
+        token: String?,
+        contentType: ContentType,
+        parameters: [String: Any]?,
+        inQueryParameters: [String: Any]?,
+        completion: @escaping (Result<Data, Error>) -> Void
+    )
 }
 
 // MARK: - NetworkService
@@ -39,9 +51,31 @@ final class NetworkService: NetworkServiceProtocol {
         inQueryParameters: [String: Any]? = nil,
         completion: @escaping (Result<Data, Error>) -> Void
     ) {
+        sendRequest(
+            baseURL: baseURL,
+            path: query.rawValue,
+            httpMethodType: httpMethodType,
+            token: token,
+            contentType: contentType,
+            parameters: parameters,
+            inQueryParameters: inQueryParameters,
+            completion: completion
+        )
+    }
+    
+    func sendRequest(
+        baseURL: BaseUrlType = .baseUrl,
+        path: String,
+        httpMethodType: HttpMethodType,
+        token: String? = nil,
+        contentType: ContentType = .json,
+        parameters: [String: Any]? = nil,
+        inQueryParameters: [String: Any]? = nil,
+        completion: @escaping (Result<Data, Error>) -> Void
+    ) {
         let url = buildURL(
             baseURL: baseURL,
-            query: query,
+            path: path,
             inQueryParameters: inQueryParameters
         )
         
@@ -116,10 +150,10 @@ final class NetworkService: NetworkServiceProtocol {
     
     private func buildURL(
         baseURL: BaseUrlType,
-        query: URLQueries,
+        path: String,
         inQueryParameters: [String: Any]?
     ) -> URL? {
-        var urlString = baseURL.rawValue + query.rawValue
+        var urlString = baseURL.rawValue + path
         
         if let inQueryParameters, !inQueryParameters.isEmpty {
             let queryString = inQueryParameters.enumerated()

@@ -9,7 +9,14 @@ import UIKit
 
 // MARK: - ChatViewProtocol
 
-protocol ChatViewProtocol: AnyObject {}
+protocol ChatViewProtocol: AnyObject {
+    
+    func reloadMessages()
+    func scrollToBottom()
+    func showLoading()
+    func hideLoading()
+    func showError(_ message: String)
+}
 
 // MARK: - ChatViewController
 
@@ -24,6 +31,14 @@ final class ChatViewController: UIViewController {
     // MARK: - Visual Components
     
     private let chatView = ChatView()
+    
+    private let activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.color = .white
+        indicator.hidesWhenStopped = true
+        
+        return indicator
+    }()
     
     // MARK: - Initializers
     
@@ -48,6 +63,7 @@ final class ChatViewController: UIViewController {
         super.viewDidLoad()
         
         initialSetup()
+        presenter?.viewDidLoad()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -71,6 +87,7 @@ final class ChatViewController: UIViewController {
         setupTableView()
         setupActions()
         setupDismissKeyboardGesture()
+        setupActivityIndicator()
     }
     
     private func setupNavigationBar() {
@@ -111,6 +128,19 @@ final class ChatViewController: UIViewController {
         )
         tapGesture.cancelsTouchesInView = false
         chatView.addGestureRecognizer(tapGesture)
+    }
+    
+    private func setupActivityIndicator() {
+        chatView.addSubview(activityIndicator)
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            activityIndicator.centerXAnchor.constraint(
+                equalTo: chatView.centerXAnchor
+            ),
+            activityIndicator.centerYAnchor.constraint(
+                equalTo: chatView.centerYAnchor
+            )
+        ])
     }
     
     // MARK: - Keyboard
@@ -177,16 +207,40 @@ extension ChatViewController: UITableViewDataSource {
         _ tableView: UITableView,
         numberOfRowsInSection section: Int
     ) -> Int {
-        
-        return 0
+        return presenter?.messages.count ?? 0
     }
     
     func tableView(
         _ tableView: UITableView,
         cellForRowAt indexPath: IndexPath
     ) -> UITableViewCell {
+        // TODO: - Заменить на кастомную ячейку MessageCell
+        let cell = UITableViewCell(
+            style: .subtitle,
+            reuseIdentifier: "MessageCell"
+        )
         
-        return UITableViewCell()
+        guard let message = presenter?.messages[indexPath.row] else {
+            return cell
+        }
+        
+        cell.textLabel?.text = message.content
+        cell.textLabel?.textColor = .white
+        cell.textLabel?.numberOfLines = 0
+        cell.detailTextLabel?.text = DateFormatHelper.messageTime(
+            from: message.timestamp
+        )
+        cell.detailTextLabel?.textColor = .textSecondary
+        cell.backgroundColor = .bgPrimary
+        cell.selectionStyle = .none
+        
+        if message.isIncoming {
+            cell.textLabel?.textAlignment = .left
+        } else {
+            cell.textLabel?.textAlignment = .right
+        }
+        
+        return cell
     }
 }
 
@@ -204,4 +258,44 @@ extension ChatViewController: MessageInputViewDelegate {
 
 // MARK: - ChatViewProtocol
 
-extension ChatViewController: ChatViewProtocol {}
+extension ChatViewController: ChatViewProtocol {
+    
+    func reloadMessages() {
+        let hasMessages = presenter?.messages.isEmpty == false
+        chatView.showEmptyState(!hasMessages)
+        chatView.messagesTableView.reloadData()
+    }
+    
+    func scrollToBottom() {
+        guard let count = presenter?.messages.count,
+              count > 0
+        else { return }
+        
+        let lastIndexPath = IndexPath(row: count - 1, section: 0)
+        chatView.messagesTableView.scrollToRow(
+            at: lastIndexPath,
+            at: .bottom,
+            animated: true
+        )
+    }
+    
+    func showLoading() {
+        activityIndicator.startAnimating()
+    }
+    
+    func hideLoading() {
+        activityIndicator.stopAnimating()
+    }
+    
+    func showError(_ message: String) {
+        let alert = UIAlertController(
+            title: "Ошибка",
+            message: message,
+            preferredStyle: .alert
+        )
+        alert.addAction(
+            UIAlertAction(title: "OK", style: .default)
+        )
+        present(alert, animated: true)
+    }
+}

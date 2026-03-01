@@ -40,6 +40,10 @@ final class ServiceAssembly {
         tokenManager: tokenManager
     )
     
+    lazy var chatService: ChatServiceProtocol = ChatService(
+        apiClient: apiClient
+    )
+    
     // MARK: - Initializers
     
     private init() {}

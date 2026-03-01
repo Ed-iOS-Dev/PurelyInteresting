@@ -30,10 +30,16 @@ final class MainScreenCoordinator: BaseCoordinator {
         rootController = UINavigationController(rootViewController: controller)
     }
     
-    func moveToChatScreen(chatUser: ChatUser) {
+    func moveToChatScreen(
+        chatUser: ChatUser,
+        chatId: Int,
+        otherUserId: Int?
+    ) {
         let chatVC = builder.makeChatModule(
             coordinator: self,
-            chatUser: chatUser
+            chatUser: chatUser,
+            chatId: chatId,
+            otherUserId: otherUserId
         )
         rootController?.pushViewController(chatVC, animated: true)
     }
