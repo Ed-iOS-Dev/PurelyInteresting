@@ -14,6 +14,7 @@ final class AuthCoordinator: BaseCoordinator {
     // MARK: - Properties
     
     let builder: AppBuilder
+    let authService: AuthServiceProtocol
     var rootController: UINavigationController?
     
     var onFinishFlow: (() -> Void)?
@@ -21,8 +22,9 @@ final class AuthCoordinator: BaseCoordinator {
     
     // MARK: - Initializers
     
-    init(builder: AppBuilder) {
+    init(builder: AppBuilder, authService: AuthServiceProtocol) {
         self.builder = builder
+        self.authService = authService
     }
     
     // MARK: - Public Methods

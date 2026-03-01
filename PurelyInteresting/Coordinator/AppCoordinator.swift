@@ -14,16 +14,15 @@ final class AppCoordinator: BaseCoordinator {
     // MARK: - Private Properties
     
     private let appBuilder = AppBuilder()
+    private let services = ServiceAssembly.shared
+    
     private var authCoordinator: AuthCoordinator?
     private var mainTabBarCoordinator: MainTabBarCoordinator?
-    
-    // TODO: - Определять состояние авторизации
-    private var isAuthorized: Bool = false
     
     // MARK: - Public Methods
     
     override func start() {
-        if isAuthorized {
+        if services.tokenManager.isAuthorized {
             goToMainTabBarScreen()
         } else {
             goToAuthScreen()
@@ -33,8 +32,11 @@ final class AppCoordinator: BaseCoordinator {
     // MARK: - Private Methods
     
     private func goToAuthScreen() {
-        authCoordinator = AuthCoordinator(builder: appBuilder)
-        guard let authCoordinator = authCoordinator else { return }
+        authCoordinator = AuthCoordinator(
+            builder: appBuilder,
+            authService: services.authService
+        )
+        guard let authCoordinator else { return }
         
         add(coordinator: authCoordinator)
         authCoordinator.start()
@@ -52,19 +54,20 @@ final class AppCoordinator: BaseCoordinator {
     }
     
     private func goToMainTabBarScreen() {
-        if let authCoordinator = authCoordinator {
+        if let authCoordinator {
             remove(coordinator: authCoordinator)
             self.authCoordinator = nil
         }
         
         mainTabBarCoordinator = MainTabBarCoordinator(builder: appBuilder)
-        guard let mainTabBarCoordinator = mainTabBarCoordinator else { return }
+        guard let mainTabBarCoordinator else { return }
         
         add(coordinator: mainTabBarCoordinator)
         mainTabBarCoordinator.start()
         
         mainTabBarCoordinator.onFinishFlow = { [weak self] in
             self?.remove(coordinator: mainTabBarCoordinator)
+            self?.services.tokenManager.clearTokens()
             self?.goToAuthScreen()
         }
     }
