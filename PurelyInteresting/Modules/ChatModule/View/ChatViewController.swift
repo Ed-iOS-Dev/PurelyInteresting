@@ -82,7 +82,6 @@ final class ChatViewController: UIViewController {
     // MARK: - Private Methods
     
     private func initialSetup() {
-        
         setupNavigationBar()
         setupContent()
         setupTableView()
@@ -104,6 +103,11 @@ final class ChatViewController: UIViewController {
     private func setupTableView() {
         chatView.messagesTableView.delegate = self
         chatView.messagesTableView.dataSource = self
+        chatView.messagesTableView.register(
+            MessageCell.self,
+            forCellReuseIdentifier: MessageCell.identifier
+        )
+        chatView.messagesTableView.separatorStyle = .none
     }
     
     private func setupActions() {
@@ -128,7 +132,7 @@ final class ChatViewController: UIViewController {
             action: #selector(dismissKeyboard)
         )
         tapGesture.cancelsTouchesInView = false
-        chatView.addGestureRecognizer(tapGesture)
+        chatView.messagesTableView.addGestureRecognizer(tapGesture)
     }
     
     private func setupActivityIndicator() {
@@ -215,31 +219,19 @@ extension ChatViewController: UITableViewDataSource {
         _ tableView: UITableView,
         cellForRowAt indexPath: IndexPath
     ) -> UITableViewCell {
-        // TODO: - Заменить на кастомную ячейку MessageCell
-        let cell = UITableViewCell(
-            style: .subtitle,
-            reuseIdentifier: "MessageCell"
-        )
-        
-        guard let message = presenter?.messages[indexPath.row] else {
-            return cell
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: MessageCell.identifier,
+            for: indexPath
+        ) as? MessageCell,
+              let message = presenter?.messages[indexPath.row]
+        else {
+            return UITableViewCell()
         }
         
-        cell.textLabel?.text = message.content
-        cell.textLabel?.textColor = .white
-        cell.textLabel?.numberOfLines = 0
-        cell.detailTextLabel?.text = DateFormatHelper.messageTime(
-            from: message.timestamp
+        cell.configure(
+            with: message,
+            avatarUrl: chatUser.avatarUrl
         )
-        cell.detailTextLabel?.textColor = .textSecondary
-        cell.backgroundColor = .bgPrimary
-        cell.selectionStyle = .none
-        
-        if message.isIncoming {
-            cell.textLabel?.textAlignment = .left
-        } else {
-            cell.textLabel?.textAlignment = .right
-        }
         
         return cell
     }

@@ -7,6 +7,29 @@
 
 import UIKit
 
+// MARK: - PaddedLabel
+
+/// Label с внутренними отступами для badge
+private final class PaddedLabel: UILabel {
+    
+    var textInsets = UIEdgeInsets(top: 2, left: 6, bottom: 2, right: 6)
+    
+    override func drawText(in rect: CGRect) {
+        super.drawText(in: rect.inset(by: textInsets))
+    }
+    
+    override var intrinsicContentSize: CGSize {
+        let size = super.intrinsicContentSize
+        let width = size.width + textInsets.left + textInsets.right
+        let height = size.height + textInsets.top + textInsets.bottom
+        // Минимальная ширина = высота (круг)
+        return CGSize(
+            width: max(width, height),
+            height: height
+        )
+    }
+}
+
 // MARK: - ChatCell
 
 final class ChatCell: UITableViewCell {
@@ -27,21 +50,13 @@ final class ChatCell: UITableViewCell {
         return iv
     }()
     
-    private let onlineIndicator: UIView = {
-        let view = UIView()
-        view.backgroundColor = .systemGreen
-        view.layer.cornerRadius = .onlineIndicatorSize / 2
-        view.layer.borderWidth = 2
-        view.layer.borderColor = UIColor.bgPrimary.cgColor
-        view.isHidden = true
-        
-        return view
-    }()
-    
     private let usernameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16, weight: .semibold)
         label.textColor = .white
+        label.setContentCompressionResistancePriority(
+            .defaultLow, for: .horizontal
+        )
         
         return label
     }()
@@ -56,39 +71,58 @@ final class ChatCell: UITableViewCell {
         return iv
     }()
     
-    private let lastMessageLabel: UILabel = {
+    /// "Отлично · 5 мин." — lastMessage + время в одной строке
+    private let subtitleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 14, weight: .regular)
         label.textColor = .textSecondary
+        label.lineBreakMode = .byTruncatingTail
+        label.setContentCompressionResistancePriority(
+            .defaultLow, for: .horizontal
+        )
         
         return label
     }()
     
-    private let timeLabel: UILabel = {
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 14, weight: .regular)
-        label.textColor = .textSecondary
-        label.textAlignment = .right
+    /// Зелёная точка онлайн-статуса справа
+    private let onlineIndicator: UIView = {
+        let view = UIView()
+        view.backgroundColor = .systemGreen
+        view.layer.cornerRadius = .onlineIndicatorSize / 2
+        view.isHidden = true
         
-        return label
+        return view
     }()
     
-    private let unreadBadge: UILabel = {
-        let label = UILabel()
+    /// Бейдж непрочитанных сообщений
+    private let unreadBadge: PaddedLabel = {
+        let label = PaddedLabel()
         label.font = .systemFont(ofSize: 13, weight: .bold)
         label.textColor = .white
         label.textAlignment = .center
         label.backgroundColor = .bgAction
-        label.layer.cornerRadius = .badgeSize / 2
         label.clipsToBounds = true
         label.isHidden = true
+        label.setContentHuggingPriority(
+            .required, for: .horizontal
+        )
+        label.setContentCompressionResistancePriority(
+            .required, for: .horizontal
+        )
         
         return label
     }()
     
+    // MARK: - Private Properties
+    
+    private var imageLoadTask: URLSessionDataTask?
+    
     // MARK: - Initializers
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+    override init(
+        style: UITableViewCell.CellStyle,
+        reuseIdentifier: String?
+    ) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         initialSetup()
@@ -102,14 +136,22 @@ final class ChatCell: UITableViewCell {
     
     // MARK: - Lifecycle
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        unreadBadge.layer.cornerRadius = unreadBadge.bounds.height / 2
+    }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         
+        imageLoadTask?.cancel()
+        imageLoadTask = nil
         avatarImageView.image = nil
         usernameLabel.text = nil
-        lastMessageLabel.text = nil
-        timeLabel.text = nil
+        subtitleLabel.text = nil
         unreadBadge.isHidden = true
+        unreadBadge.text = nil
         onlineIndicator.isHidden = true
         verifiedImageView.isHidden = true
     }
@@ -117,25 +159,30 @@ final class ChatCell: UITableViewCell {
     // MARK: - Public Methods
     
     func configure(with item: ChatItem) {
-        avatarImageView.image = item.avatarImage
         usernameLabel.text = item.username
-        lastMessageLabel.text = item.lastMessage
-        timeLabel.text = item.time
-        onlineIndicator.isHidden = !item.isOnline
         verifiedImageView.isHidden = !item.isVerified
+        onlineIndicator.isHidden = !item.isOnline
         
-        if item.unreadCount > 0 {
-            unreadBadge.isHidden = false
-            unreadBadge.text = "\(item.unreadCount)"
+        // Subtitle: "lastMessage · time"
+        configureSubtitle(
+            message: item.lastMessage,
+            time: item.time
+        )
+        
+        // Unread badge
+        configureUnreadBadge(count: item.unreadCount)
+        
+        // Avatar
+        if let avatarImage = item.avatarImage {
+            avatarImageView.image = avatarImage
         } else {
-            unreadBadge.isHidden = true
+            loadAvatar(from: item.avatarUrl)
         }
     }
     
     // MARK: - Private Methods
     
     private func initialSetup() {
-        
         setupSubviews()
         configureConstraints()
     }
@@ -146,31 +193,74 @@ final class ChatCell: UITableViewCell {
         
         contentView.addSubviews([
             avatarImageView,
-            onlineIndicator,
             usernameLabel,
             verifiedImageView,
-            lastMessageLabel,
-            timeLabel,
+            subtitleLabel,
+            onlineIndicator,
             unreadBadge
         ])
     }
     
+    private func configureSubtitle(message: String?, time: String?) {
+        var parts: [String] = []
+        
+        if let message, !message.isEmpty {
+            parts.append(message)
+        }
+        
+        if let time, !time.isEmpty {
+            parts.append(time)
+        }
+        
+        subtitleLabel.text = parts.joined(separator: " · ")
+    }
+    
+    private func configureUnreadBadge(count: Int) {
+        if count > 0 {
+            unreadBadge.isHidden = false
+            unreadBadge.text = "\(count)"
+        } else {
+            unreadBadge.isHidden = true
+        }
+    }
+    
+    private func loadAvatar(from urlString: String?) {
+        guard let urlString,
+              let url = URL(string: urlString)
+        else {
+            avatarImageView.image = UIImage(
+                systemName: "person.circle.fill"
+            )
+            avatarImageView.tintColor = .textSecondary
+            return
+        }
+        
+        imageLoadTask = URLSession.shared.dataTask(
+            with: url
+        ) { [weak self] data, _, _ in
+            guard let data,
+                  let image = UIImage(data: data)
+            else { return }
+            
+            DispatchQueue.main.async {
+                self?.avatarImageView.image = image
+            }
+        }
+        imageLoadTask?.resume()
+    }
+    
+    // MARK: - Constraints
+    
     private func configureConstraints() {
-        setupAvatarImageViewConstraints()
+        setupAvatarConstraints()
+        setupUsernameConstraints()
+        setupVerifiedConstraints()
+        setupSubtitleConstraints()
         setupOnlineIndicatorConstraints()
-        setupUsernameLabelConstraints()
-        setupVerifiedImageViewConstraints()
-        setupLastMessageLabelConstraints()
-        setupTimeLabelConstraints()
         setupUnreadBadgeConstraints()
     }
-}
-
-// MARK: - Constraints
-
-private extension ChatCell {
     
-    func setupAvatarImageViewConstraints() {
+    private func setupAvatarConstraints() {
         NSLayoutConstraint.activate([
             avatarImageView.leadingAnchor.constraint(
                 equalTo: contentView.leadingAnchor,
@@ -188,26 +278,7 @@ private extension ChatCell {
         ])
     }
     
-    func setupOnlineIndicatorConstraints() {
-        NSLayoutConstraint.activate([
-            onlineIndicator.bottomAnchor.constraint(
-                equalTo: avatarImageView.bottomAnchor,
-                constant: -.onlineIndicatorOffset
-            ),
-            onlineIndicator.leadingAnchor.constraint(
-                equalTo: avatarImageView.leadingAnchor,
-                constant: .onlineIndicatorOffset
-            ),
-            onlineIndicator.widthAnchor.constraint(
-                equalToConstant: .onlineIndicatorSize
-            ),
-            onlineIndicator.heightAnchor.constraint(
-                equalToConstant: .onlineIndicatorSize
-            )
-        ])
-    }
-    
-    func setupUsernameLabelConstraints() {
+    private func setupUsernameConstraints() {
         NSLayoutConstraint.activate([
             usernameLabel.topAnchor.constraint(
                 equalTo: contentView.topAnchor,
@@ -220,7 +291,7 @@ private extension ChatCell {
         ])
     }
     
-    func setupVerifiedImageViewConstraints() {
+    private func setupVerifiedConstraints() {
         NSLayoutConstraint.activate([
             verifiedImageView.centerYAnchor.constraint(
                 equalTo: usernameLabel.centerYAnchor
@@ -228,6 +299,10 @@ private extension ChatCell {
             verifiedImageView.leadingAnchor.constraint(
                 equalTo: usernameLabel.trailingAnchor,
                 constant: .verifiedSpacing
+            ),
+            verifiedImageView.trailingAnchor.constraint(
+                lessThanOrEqualTo: onlineIndicator.leadingAnchor,
+                constant: -.contentSpacing
             ),
             verifiedImageView.widthAnchor.constraint(
                 equalToConstant: .verifiedSize
@@ -238,53 +313,53 @@ private extension ChatCell {
         ])
     }
     
-    func setupLastMessageLabelConstraints() {
+    private func setupSubtitleConstraints() {
         NSLayoutConstraint.activate([
-            lastMessageLabel.topAnchor.constraint(
+            subtitleLabel.topAnchor.constraint(
                 equalTo: usernameLabel.bottomAnchor,
                 constant: .messageTopOffset
             ),
-            lastMessageLabel.leadingAnchor.constraint(
+            subtitleLabel.leadingAnchor.constraint(
                 equalTo: avatarImageView.trailingAnchor,
                 constant: .contentSpacing
             ),
-            lastMessageLabel.trailingAnchor.constraint(
-                equalTo: unreadBadge.leadingAnchor,
+            subtitleLabel.trailingAnchor.constraint(
+                lessThanOrEqualTo: unreadBadge.leadingAnchor,
                 constant: -.contentSpacing
             ),
-            lastMessageLabel.bottomAnchor.constraint(
+            subtitleLabel.bottomAnchor.constraint(
                 equalTo: contentView.bottomAnchor,
                 constant: -.cellVerticalPadding
             )
         ])
     }
     
-    func setupTimeLabelConstraints() {
+    private func setupOnlineIndicatorConstraints() {
         NSLayoutConstraint.activate([
-            timeLabel.centerYAnchor.constraint(
+            onlineIndicator.centerYAnchor.constraint(
                 equalTo: usernameLabel.centerYAnchor
             ),
-            timeLabel.trailingAnchor.constraint(
+            onlineIndicator.trailingAnchor.constraint(
                 equalTo: contentView.trailingAnchor,
                 constant: -.horizontalPadding
+            ),
+            onlineIndicator.widthAnchor.constraint(
+                equalToConstant: .onlineIndicatorSize
+            ),
+            onlineIndicator.heightAnchor.constraint(
+                equalToConstant: .onlineIndicatorSize
             )
         ])
     }
     
-    func setupUnreadBadgeConstraints() {
+    private func setupUnreadBadgeConstraints() {
         NSLayoutConstraint.activate([
             unreadBadge.centerYAnchor.constraint(
-                equalTo: lastMessageLabel.centerYAnchor
+                equalTo: subtitleLabel.centerYAnchor
             ),
             unreadBadge.trailingAnchor.constraint(
                 equalTo: contentView.trailingAnchor,
                 constant: -.horizontalPadding
-            ),
-            unreadBadge.heightAnchor.constraint(
-                equalToConstant: .badgeSize
-            ),
-            unreadBadge.widthAnchor.constraint(
-                greaterThanOrEqualToConstant: .badgeSize
             )
         ])
     }
@@ -297,13 +372,11 @@ private extension CGFloat {
     static let horizontalPadding: Self = 16
     static let cellVerticalPadding: Self = 12
     static let avatarSize: Self = 56
-    static let onlineIndicatorSize: Self = 14
-    static let onlineIndicatorOffset: Self = 2
+    static let onlineIndicatorSize: Self = 10
     static let contentSpacing: Self = 12
     static let verifiedSpacing: Self = 4
     static let verifiedSize: Self = 16
     static let messageTopOffset: Self = 4
-    static let badgeSize: Self = 24
 }
 
 private extension String {

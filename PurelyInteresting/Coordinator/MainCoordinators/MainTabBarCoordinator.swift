@@ -29,22 +29,18 @@ final class MainTabBarCoordinator: BaseCoordinator {
     override func start() {
         tabBarController = MainTabBarController()
         
-        /// Feed Tab
+        /// Feed Tab (index 0)
         let feedVC = builder.makeFeedModule()
         let feedNav = UINavigationController(rootViewController: feedVC)
         
-        /// Saved Tab
+        /// Saved Tab (index 1)
         let savedVC = builder.makeSavedModule()
         let savedNav = UINavigationController(rootViewController: savedVC)
         
-        /// Create Placeholder (центральная кнопка)
+        /// Create Placeholder (index 2) — не используется, кнопка в кастомном tab bar
         let createPlaceholderVC = UIViewController()
-        createPlaceholderVC.tabBarItem = UITabBarItem(
-            title: nil, image: nil, selectedImage: nil
-        )
-        createPlaceholderVC.tabBarItem.isEnabled = false
         
-        /// Messages Tab
+        /// Messages Tab (index 3)
         let mainScreenCoordinator = MainScreenCoordinator(builder: builder)
         let mainScreenVC = builder.makeMainScreenModule(
             coordinator: mainScreenCoordinator
@@ -52,7 +48,7 @@ final class MainTabBarCoordinator: BaseCoordinator {
         mainScreenCoordinator.setViewController(controller: mainScreenVC)
         add(coordinator: mainScreenCoordinator)
         
-        /// Profile Tab
+        /// Profile Tab (index 4)
         let profileVC = builder.makeProfileModule()
         let profileNav = UINavigationController(rootViewController: profileVC)
         
