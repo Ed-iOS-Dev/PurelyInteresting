@@ -41,6 +41,12 @@ protocol ChatServiceProtocol: AnyObject {
         completion: @escaping (Result<SendMessageResponse, Error>) -> Void
     )
     
+    /// Отправить сообщение с произвольными параметрами (recipient_id или username)
+    func sendMessageRaw(
+        parameters: [String: Any],
+        completion: @escaping (Result<SendMessageResponse, Error>) -> Void
+    )
+    
     /// Получить токен подписки на чат
     func fetchSubscriptionToken(
         chatId: Int,
@@ -182,6 +188,16 @@ final class ChatService: ChatServiceProtocol {
             "message_type": "text"
         ]
         
+        sendMessageRaw(
+            parameters: parameters,
+            completion: completion
+        )
+    }
+    
+    func sendMessageRaw(
+        parameters: [String: Any],
+        completion: @escaping (Result<SendMessageResponse, Error>) -> Void
+    ) {
         apiClient.authorizedRequest(
             query: .sendMessage,
             httpMethodType: .post,
