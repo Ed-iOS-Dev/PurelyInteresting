@@ -17,6 +17,7 @@ protocol MainScreenPresenterProtocol: AnyObject {
     func didSelectChat(at index: Int)
     func refreshChats()
     func searchChats(query: String)
+    func composeMessage(recipient: String, text: String)
 }
 
 // MARK: - MainScreenPresenter
@@ -72,18 +73,15 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
     }
     
     func searchChats(query: String) {
-        // Отменяем предыдущий запрос (debounce)
         searchWorkItem?.cancel()
         
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
         
-        // Пустой запрос — загружаем все чаты
         guard !trimmed.isEmpty else {
             loadChats()
             return
         }
         
-        // Debounce 300ms
         let workItem = DispatchWorkItem { [weak self] in
             self?.performSearch(query: trimmed)
         }
@@ -92,6 +90,26 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
             deadline: .now() + 0.3,
             execute: workItem
         )
+    }
+    
+    func composeMessage(recipient: String, text: String) {
+        view?.showLoading()
+        
+        // Определяем: число = recipient_id, строка = username
+        let recipientId = Int(recipient)
+        
+        var parameters: [String: Any] = [
+            "content": text,
+            "message_type": "text"
+        ]
+        
+        if let recipientId {
+            parameters["recipient_id"] = recipientId
+        } else {
+            parameters["username"] = recipient
+        }
+        
+        sendNewMessage(parameters: parameters)
     }
     
     // MARK: - Private Methods
@@ -146,6 +164,28 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
                 
             case .failure(let error):
                 self.handleError(error)
+            }
+        }
+    }
+    
+    private func sendNewMessage(parameters: [String: Any]) {
+        chatService.sendMessageRaw(
+            parameters: parameters
+        ) { [weak self] result in
+            guard let self else { return }
+            
+            self.view?.hideLoading()
+            
+            switch result {
+            case .success:
+                self.view?.showSuccess("Сообщение отправлено!")
+                // Перезагружаем чаты — новый чат появится в списке
+                self.loadChats()
+                
+            case .failure:
+                self.view?.showError(
+                    "Не удалось отправить сообщение"
+                )
             }
         }
     }

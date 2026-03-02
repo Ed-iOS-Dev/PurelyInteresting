@@ -15,6 +15,7 @@ protocol MainScreenViewProtocol: AnyObject {
     func showLoading()
     func hideLoading()
     func showError(_ message: String)
+    func showSuccess(_ message: String)
 }
 
 // MARK: - MainScreenViewController
@@ -131,7 +132,7 @@ final class MainScreenViewController: UIViewController {
     }
     
     @objc private func composeButtonTapped() {
-        // TODO: - Передать в presenter
+        showComposeAlert()
     }
     
     @objc private func filterButtonTapped() {
@@ -144,6 +145,56 @@ final class MainScreenViewController: UIViewController {
     
     @objc private func dismissKeyboard() {
         mainScreenView.searchBar.resignFirstResponder()
+    }
+    
+    // MARK: - Compose Alert
+    
+    private func showComposeAlert() {
+        let alert = UIAlertController(
+            title: "Новое сообщение",
+            message: "Введите имя пользователя или ID получателя",
+            preferredStyle: .alert
+        )
+        
+        alert.addTextField { textField in
+            textField.placeholder = "Username или ID (напр. natfullin или 2)"
+            textField.autocapitalizationType = .none
+            textField.autocorrectionType = .no
+        }
+        
+        alert.addTextField { textField in
+            textField.placeholder = "Текст сообщения"
+        }
+        
+        let sendAction = UIAlertAction(
+            title: "Отправить",
+            style: .default
+        ) { [weak self] _ in
+            guard let recipient = alert.textFields?[0].text,
+                  !recipient.trimmingCharacters(
+                    in: .whitespacesAndNewlines
+                  ).isEmpty,
+                  let text = alert.textFields?[1].text,
+                  !text.trimmingCharacters(
+                    in: .whitespacesAndNewlines
+                  ).isEmpty
+            else { return }
+            
+            self?.presenter?.composeMessage(
+                recipient: recipient,
+                text: text
+            )
+        }
+        
+        let cancelAction = UIAlertAction(
+            title: "Отмена",
+            style: .cancel
+        )
+        
+        alert.addAction(sendAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true)
     }
 }
 
@@ -224,6 +275,18 @@ extension MainScreenViewController: MainScreenViewProtocol {
     func showError(_ message: String) {
         let alert = UIAlertController(
             title: "Ошибка",
+            message: message,
+            preferredStyle: .alert
+        )
+        alert.addAction(
+            UIAlertAction(title: "OK", style: .default)
+        )
+        present(alert, animated: true)
+    }
+    
+    func showSuccess(_ message: String) {
+        let alert = UIAlertController(
+            title: "Готово",
             message: message,
             preferredStyle: .alert
         )
