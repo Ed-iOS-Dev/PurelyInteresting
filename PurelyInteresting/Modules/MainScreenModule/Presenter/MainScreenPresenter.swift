@@ -32,8 +32,8 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
     
     private let coordinator: MainScreenCoordinator
     private let chatService: ChatServiceProtocol
+    private let tokenManager: TokenManagerProtocol
     
-    private var currentUserId: Int?
     private var chatDTOs: [ChatDTO] = []
     private var searchWorkItem: DispatchWorkItem?
     
@@ -42,11 +42,13 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
     init(
         view: MainScreenViewProtocol,
         coordinator: MainScreenCoordinator,
-        chatService: ChatServiceProtocol
+        chatService: ChatServiceProtocol,
+        tokenManager: TokenManagerProtocol
     ) {
         self.view = view
         self.coordinator = coordinator
         self.chatService = chatService
+        self.tokenManager = tokenManager
     }
     
     // MARK: - Public Methods
@@ -131,7 +133,7 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
             case .success(let response):
                 self.chatDTOs = response.chats
                 self.chatItems = response.chats.map {
-                    $0.toChatItem(currentUserId: self.currentUserId)
+                    $0.toChatItem(currentUserId: self.tokenManager.currentUserId)
                 }
                 self.view?.reloadChats()
                 
@@ -158,7 +160,7 @@ final class MainScreenPresenter: MainScreenPresenterProtocol {
             case .success(let response):
                 self.chatDTOs = response.chats
                 self.chatItems = response.chats.map {
-                    $0.toChatItem(currentUserId: self.currentUserId)
+                    $0.toChatItem(currentUserId: self.tokenManager.currentUserId)
                 }
                 self.view?.reloadChats()
                 

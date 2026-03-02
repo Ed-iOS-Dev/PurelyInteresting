@@ -70,6 +70,11 @@ final class ChatViewController: UIViewController {
         super.viewWillAppear(animated)
         
         registerKeyboardNotifications()
+        
+        // Скрываем floating tab bar
+        if let tabBar = tabBarController as? MainTabBarController {
+            tabBar.setFloatingBarHidden(true, animated: true)
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -77,6 +82,11 @@ final class ChatViewController: UIViewController {
         
         removeKeyboardNotifications()
         presenter?.viewWillDisappear()
+        
+        // Показываем floating tab bar
+        if let tabBar = tabBarController as? MainTabBarController {
+            tabBar.setFloatingBarHidden(false, animated: true)
+        }
     }
     
     // MARK: - Private Methods

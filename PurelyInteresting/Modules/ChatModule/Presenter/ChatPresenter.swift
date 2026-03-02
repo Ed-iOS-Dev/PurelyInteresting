@@ -70,6 +70,8 @@ final class ChatPresenter: ChatPresenterProtocol {
     // MARK: - Public Methods
     
     func viewDidLoad() {
+        print("[DEBUG] currentUserId: \(String(describing: tokenManager.currentUserId))")
+        print("[DEBUG] accessToken prefix: \(String(tokenManager.accessToken?.prefix(50) ?? "nil"))")
         loadMessages()
         subscribeToUpdates()
     }
@@ -127,7 +129,7 @@ final class ChatPresenter: ChatPresenterProtocol {
             switch result {
             case .success(let response):
                 let newMessages = response.messages.map {
-                    $0.toChatMessage(currentUserId: nil)
+                    $0.toChatMessage(currentUserId: self.tokenManager.currentUserId)
                 }
                 self.messages.insert(contentsOf: newMessages, at: 0)
                 self.view?.reloadMessages()
@@ -161,7 +163,7 @@ final class ChatPresenter: ChatPresenterProtocol {
                 self.totalCount = response.count
                 // API возвращает от новых к старым, разворачиваем
                 self.messages = response.messages.reversed().map {
-                    $0.toChatMessage(currentUserId: nil)
+                    $0.toChatMessage(currentUserId: self.tokenManager.currentUserId)
                 }
                 self.view?.reloadMessages()
                 self.view?.scrollToBottom()
@@ -210,7 +212,9 @@ final class ChatPresenter: ChatPresenterProtocol {
     
     /// Обрабатывает входящее сообщение из Centrifugo
     private func handleIncomingMessage(_ messageData: CentrifugoMessageData) {
-        let message = messageData.toChatMessage(currentUserId: nil)
+        let message = messageData.toChatMessage(
+            currentUserId: self.tokenManager.currentUserId
+        )
         
         // Проверяем дубликат по id
         guard !messages.contains(where: { $0.id == message.id }) else {

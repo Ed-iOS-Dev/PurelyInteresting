@@ -49,12 +49,65 @@ enum DateFormatHelper {
         return formatter
     }()
     
+    /// "2026-03-02T15:04:00" (без таймзоны)
+    private static let noTimezoneDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(identifier: "UTC")
+        return formatter
+    }()
+    
+    /// "2026-03-02 15:04:00" (пробел вместо T)
+    private static let spaceSeparatedFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(identifier: "UTC")
+        return formatter
+    }()
+    
+    /// "2026-03-02T15:04:00.000000" (fractional без timezone)
+    private static let fractionalNoTZFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(identifier: "UTC")
+        return formatter
+    }()
+    
+    /// "2026-03-02 15:04:00.000000" (пробел + fractional)
+    private static let spaceFractionalFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSSSS"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(identifier: "UTC")
+        return formatter
+    }()
+    
     // MARK: - Public Methods
     
     /// Парсит ISO 8601 строку в Date
     static func date(from string: String) -> Date? {
-        isoFormatter.date(from: string)
-            ?? isoFallbackFormatter.date(from: string)
+        if let date = isoFormatter.date(from: string) {
+            return date
+        }
+        if let date = isoFallbackFormatter.date(from: string) {
+            return date
+        }
+        if let date = fractionalNoTZFormatter.date(from: string) {
+            return date
+        }
+        if let date = noTimezoneDateFormatter.date(from: string) {
+            return date
+        }
+        if let date = spaceSeparatedFormatter.date(from: string) {
+            return date
+        }
+        if let date = spaceFractionalFormatter.date(from: string) {
+            return date
+        }
+        return nil
     }
     
     /// Короткое время для списка чатов: "14:30" или "01.03.26"

@@ -14,6 +14,7 @@ protocol TokenManagerProtocol: AnyObject {
     var isAuthorized: Bool { get }
     var accessToken: String? { get }
     var sessionId: String? { get }
+    var currentUserId: Int? { get }
     
     func saveTokens(response: TokenResponse)
     func saveSessionId(_ sessionId: String)
@@ -37,6 +38,12 @@ final class TokenManager: TokenManagerProtocol {
     
     var sessionId: String? {
         keychain.get(forKey: KeychainService.Keys.sessionId)
+    }
+    
+    /// ID текущего пользователя, декодируется из JWT access token
+    var currentUserId: Int? {
+        guard let token = accessToken else { return nil }
+        return Self.decodeUserId(from: token)
     }
     
     // MARK: - Private Properties
@@ -141,5 +148,45 @@ final class TokenManager: TokenManagerProtocol {
         refreshCompletions.removeAll()
         
         completions.forEach { $0(result) }
+    }
+    
+    /// Декодирует user_id из JWT (проверяет все части токена)
+    private static func decodeUserId(from token: String) -> Int? {
+        let parts = token.split(separator: ".")
+        
+        // Проверяем каждую часть токена — payload может быть
+        // в parts[0] или parts[1] в зависимости от сервера
+        for part in parts {
+            var base64 = String(part)
+                .replacingOccurrences(of: "-", with: "+")
+                .replacingOccurrences(of: "_", with: "/")
+            
+            let remainder = base64.count % 4
+            if remainder > 0 {
+                base64 += String(repeating: "=", count: 4 - remainder)
+            }
+            
+            guard let data = Data(base64Encoded: base64),
+                  let json = try? JSONSerialization.jsonObject(
+                    with: data
+                  ) as? [String: Any]
+            else { continue }
+            
+            // sub как Int (ваш случай: "sub": 318)
+            if let sub = json["sub"] as? Int {
+                return sub
+            }
+            // user_id как Int
+            if let userId = json["user_id"] as? Int {
+                return userId
+            }
+            // sub как String -> Int
+            if let sub = json["sub"] as? String,
+               let userId = Int(sub) {
+                return userId
+            }
+        }
+        
+        return nil
     }
 }
