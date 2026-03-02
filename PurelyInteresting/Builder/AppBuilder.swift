@@ -44,7 +44,8 @@ final class AppBuilder {
         let presenter = MainScreenPresenter(
             view: view,
             coordinator: coordinator,
-            chatService: ServiceAssembly.shared.chatService
+            chatService: ServiceAssembly.shared.chatService,
+            tokenManager: ServiceAssembly.shared.tokenManager
         )
         view.presenter = presenter
         view.tabBarItem = UITabBarItem(
