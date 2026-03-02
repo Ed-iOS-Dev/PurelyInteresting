@@ -16,6 +16,7 @@ protocol ChatServiceProtocol: AnyObject {
         isInbox: Bool,
         offset: Int,
         limit: Int,
+        search: String?,
         completion: @escaping (Result<ChatsListResponse, Error>) -> Void
     )
     
@@ -39,6 +40,17 @@ protocol ChatServiceProtocol: AnyObject {
         content: String,
         completion: @escaping (Result<SendMessageResponse, Error>) -> Void
     )
+    
+    /// Получить токен подписки на чат
+    func fetchSubscriptionToken(
+        chatId: Int,
+        completion: @escaping (Result<SubscriptionTokenResponse, Error>) -> Void
+    )
+    
+    /// Получить токен подписки на все чаты
+    func fetchAllChatsSubscriptionToken(
+        completion: @escaping (Result<SubscriptionTokenResponse, Error>) -> Void
+    )
 }
 
 // MARK: - ChatService
@@ -61,13 +73,18 @@ final class ChatService: ChatServiceProtocol {
         isInbox: Bool = true,
         offset: Int = 0,
         limit: Int = 20,
+        search: String? = nil,
         completion: @escaping (Result<ChatsListResponse, Error>) -> Void
     ) {
-        let queryParams: [String: Any] = [
+        var queryParams: [String: Any] = [
             "is_in_inbox": isInbox,
             "offset": offset,
             "limit": limit
         ]
+        
+        if let search, !search.isEmpty {
+            queryParams["search"] = search
+        }
         
         apiClient.authorizedRequest(
             query: .chats,
@@ -125,12 +142,12 @@ final class ChatService: ChatServiceProtocol {
         limit: Int = 50,
         completion: @escaping (Result<MessagesListResponse, Error>) -> Void
     ) {
+        let path = "/api/v1/chats/\(chatId)/messages"
+        
         let queryParams: [String: Any] = [
             "offset": offset,
             "limit": limit
         ]
-        
-        let path = "/api/v1/chats/\(chatId)/messages"
         
         apiClient.authorizedRequest(
             path: path,
@@ -175,6 +192,59 @@ final class ChatService: ChatServiceProtocol {
             case .success(let data):
                 guard let response = try? JSONDecoder().decode(
                     SendMessageResponse.self, from: data
+                ) else {
+                    completion(.failure(NetworkError.decodingError))
+                    return
+                }
+                completion(.success(response))
+                
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func fetchSubscriptionToken(
+        chatId: Int,
+        completion: @escaping (Result<SubscriptionTokenResponse, Error>) -> Void
+    ) {
+        let path = "/api/v1/chats/\(chatId)/subscribe"
+        
+        apiClient.authorizedRequest(
+            path: path,
+            httpMethodType: .get,
+            parameters: nil,
+            inQueryParameters: nil
+        ) { result in
+            switch result {
+            case .success(let data):
+                guard let response = try? JSONDecoder().decode(
+                    SubscriptionTokenResponse.self, from: data
+                ) else {
+                    completion(.failure(NetworkError.decodingError))
+                    return
+                }
+                completion(.success(response))
+                
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func fetchAllChatsSubscriptionToken(
+        completion: @escaping (Result<SubscriptionTokenResponse, Error>) -> Void
+    ) {
+        apiClient.authorizedRequest(
+            query: .subscribeAll,
+            httpMethodType: .get,
+            parameters: nil,
+            inQueryParameters: nil
+        ) { result in
+            switch result {
+            case .success(let data):
+                guard let response = try? JSONDecoder().decode(
+                    SubscriptionTokenResponse.self, from: data
                 ) else {
                     completion(.failure(NetworkError.decodingError))
                     return

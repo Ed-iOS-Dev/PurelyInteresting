@@ -46,6 +46,9 @@ public enum URLQueries: String {
     
     /// POST — Отправка сообщения
     case sendMessage = "/api/v1/chats/messages"
+    
+    /// GET — Токен подписки на все чаты
+    case subscribeAll = "/api/v1/chats/subscribe/all"
 }
 
 // MARK: - HttpMethodType

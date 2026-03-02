@@ -71,6 +71,8 @@ final class AppBuilder {
             view: view,
             coordinator: coordinator,
             chatService: ServiceAssembly.shared.chatService,
+            centrifugoService: ServiceAssembly.shared.makeCentrifugoService(),
+            tokenManager: ServiceAssembly.shared.tokenManager,
             chatId: chatId,
             otherUserId: otherUserId
         )

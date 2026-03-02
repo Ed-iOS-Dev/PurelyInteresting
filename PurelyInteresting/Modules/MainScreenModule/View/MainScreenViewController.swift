@@ -53,8 +53,10 @@ final class MainScreenViewController: UIViewController {
     private func initialSetup() {
         setupNavigationBar()
         setupTableView()
+        setupSearchBar()
         setupActions()
         setupActivityIndicator()
+        setupDismissKeyboardGesture()
     }
     
     private func setupNavigationBar() {
@@ -68,6 +70,10 @@ final class MainScreenViewController: UIViewController {
             ChatCell.self,
             forCellReuseIdentifier: ChatCell.identifier
         )
+    }
+    
+    private func setupSearchBar() {
+        mainScreenView.searchBar.delegate = self
     }
     
     private func setupActions() {
@@ -109,6 +115,15 @@ final class MainScreenViewController: UIViewController {
         ])
     }
     
+    private func setupDismissKeyboardGesture() {
+        let tapGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(dismissKeyboard)
+        )
+        tapGesture.cancelsTouchesInView = false
+        mainScreenView.chatsTableView.addGestureRecognizer(tapGesture)
+    }
+    
     // MARK: - @objc Methods
     
     @objc private func usernameButtonTapped() {
@@ -125,6 +140,26 @@ final class MainScreenViewController: UIViewController {
     
     @objc private func segmentChanged() {
         // TODO: - Передать в presenter
+    }
+    
+    @objc private func dismissKeyboard() {
+        mainScreenView.searchBar.resignFirstResponder()
+    }
+}
+
+// MARK: - UISearchBarDelegate
+
+extension MainScreenViewController: UISearchBarDelegate {
+    
+    func searchBar(
+        _ searchBar: UISearchBar,
+        textDidChange searchText: String
+    ) {
+        presenter?.searchChats(query: searchText)
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
     }
 }
 

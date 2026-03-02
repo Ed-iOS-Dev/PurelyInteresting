@@ -17,6 +17,7 @@ protocol ChatPresenterProtocol: AnyObject {
     func sendMessage(_ text: String)
     func viewProfileTapped()
     func loadMoreMessages()
+    func viewWillDisappear()
 }
 
 // MARK: - ChatPresenter
@@ -31,6 +32,8 @@ final class ChatPresenter: ChatPresenterProtocol {
     
     private let coordinator: MainScreenCoordinator
     private let chatService: ChatServiceProtocol
+    private let centrifugoService: CentrifugoServiceProtocol
+    private let tokenManager: TokenManagerProtocol
     private let chatId: Int
     private let otherUserId: Int?
     
@@ -50,12 +53,16 @@ final class ChatPresenter: ChatPresenterProtocol {
         view: ChatViewProtocol,
         coordinator: MainScreenCoordinator,
         chatService: ChatServiceProtocol,
+        centrifugoService: CentrifugoServiceProtocol,
+        tokenManager: TokenManagerProtocol,
         chatId: Int,
         otherUserId: Int?
     ) {
         self.view = view
         self.coordinator = coordinator
         self.chatService = chatService
+        self.centrifugoService = centrifugoService
+        self.tokenManager = tokenManager
         self.chatId = chatId
         self.otherUserId = otherUserId
     }
@@ -64,6 +71,7 @@ final class ChatPresenter: ChatPresenterProtocol {
     
     func viewDidLoad() {
         loadMessages()
+        subscribeToUpdates()
     }
     
     func sendMessage(_ text: String) {
@@ -130,6 +138,10 @@ final class ChatPresenter: ChatPresenterProtocol {
         }
     }
     
+    func viewWillDisappear() {
+        centrifugoService.disconnect()
+    }
+    
     // MARK: - Private Methods
     
     private func loadMessages() {
@@ -161,6 +173,55 @@ final class ChatPresenter: ChatPresenterProtocol {
                     self.view?.showError("Не удалось загрузить сообщения")
                 }
             }
+        }
+    }
+    
+    /// Подписка на входящие сообщения через Centrifugo
+    private func subscribeToUpdates() {
+        // Шаг 1: Получаем subscription token для канала чата
+        chatService.fetchSubscriptionToken(
+            chatId: chatId
+        ) { [weak self] result in
+            guard let self else { return }
+            
+            switch result {
+            case .success(let tokenResponse):
+                // Шаг 2: Подключаемся к Centrifugo
+                // connectionToken = JWT access token (авторизация)
+                // subscriptionToken = токен канала чата
+                guard let accessToken = self.tokenManager.accessToken else {
+                    return
+                }
+                
+                self.centrifugoService.subscribe(
+                    connectionToken: accessToken,
+                    subscriptionToken: tokenResponse.token,
+                    channel: tokenResponse.channel,
+                    onMessage: { [weak self] messageData in
+                        self?.handleIncomingMessage(messageData)
+                    }
+                )
+                
+            case .failure(let error):
+                print("[Chat] Subscribe error: \(error)")
+            }
+        }
+    }
+    
+    /// Обрабатывает входящее сообщение из Centrifugo
+    private func handleIncomingMessage(_ messageData: CentrifugoMessageData) {
+        let message = messageData.toChatMessage(currentUserId: nil)
+        
+        // Проверяем дубликат по id
+        guard !messages.contains(where: { $0.id == message.id }) else {
+            return
+        }
+        
+        // Добавляем только входящие (свои мы уже добавили локально)
+        if message.isIncoming {
+            messages.append(message)
+            view?.reloadMessages()
+            view?.scrollToBottom()
         }
     }
 }
