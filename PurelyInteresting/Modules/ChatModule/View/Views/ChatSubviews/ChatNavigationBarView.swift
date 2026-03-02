@@ -56,6 +56,10 @@ final class ChatNavigationBarView: UIView {
         return label
     }()
     
+    // MARK: - Private Properties
+    
+    private var imageLoadTask: URLSessionDataTask?
+    
     // MARK: - Initializers
     
     override init(frame: CGRect) {
@@ -73,15 +77,19 @@ final class ChatNavigationBarView: UIView {
     // MARK: - Public Methods
     
     func configure(with user: ChatUser) {
-        avatarImageView.image = user.avatarImage
         usernameLabel.text = user.username
         statusLabel.text = user.lastSeenStatus
+        
+        if let avatarImage = user.avatarImage {
+            avatarImageView.image = avatarImage
+        } else {
+            loadAvatar(from: user.avatarUrl)
+        }
     }
     
     // MARK: - Private Methods
     
     private func initialSetup() {
-        
         setupSubviews()
         configureConstraints()
     }
@@ -93,6 +101,32 @@ final class ChatNavigationBarView: UIView {
             usernameLabel,
             statusLabel
         ])
+    }
+    
+    private func loadAvatar(from urlString: String?) {
+        guard let urlString,
+              let url = URL(string: urlString)
+        else {
+            avatarImageView.image = UIImage(
+                systemName: "person.circle.fill"
+            )
+            avatarImageView.tintColor = .textSecondary
+            return
+        }
+        
+        imageLoadTask?.cancel()
+        imageLoadTask = URLSession.shared.dataTask(
+            with: url
+        ) { [weak self] data, _, _ in
+            guard let data,
+                  let image = UIImage(data: data)
+            else { return }
+            
+            DispatchQueue.main.async {
+                self?.avatarImageView.image = image
+            }
+        }
+        imageLoadTask?.resume()
     }
     
     private func configureConstraints() {
