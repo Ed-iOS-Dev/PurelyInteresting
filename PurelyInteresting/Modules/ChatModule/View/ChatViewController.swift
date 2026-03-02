@@ -76,6 +76,7 @@ final class ChatViewController: UIViewController {
         super.viewWillDisappear(animated)
         
         removeKeyboardNotifications()
+        presenter?.viewWillDisappear()
     }
     
     // MARK: - Private Methods

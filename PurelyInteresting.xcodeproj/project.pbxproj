@@ -47,6 +47,8 @@
 		93EE49112F54E010002EA052 /* ChatAPIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE49102F54E00D002EA052 /* ChatAPIModels.swift */; };
 		93EE49132F54E0B3002EA052 /* ChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE49122F54E0B1002EA052 /* ChatService.swift */; };
 		93EE49152F54E178002EA052 /* DateFormatHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE49142F54E163002EA052 /* DateFormatHelper.swift */; };
+		93EE491B2F556CAD002EA052 /* CentrifugoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE491A2F556CAC002EA052 /* CentrifugoService.swift */; };
+		93EE491D2F556CC4002EA052 /* CentrifugoModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE491C2F556CC2002EA052 /* CentrifugoModels.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -92,6 +94,8 @@
 		93EE49102F54E00D002EA052 /* ChatAPIModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAPIModels.swift; sourceTree = "<group>"; };
 		93EE49122F54E0B1002EA052 /* ChatService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatService.swift; sourceTree = "<group>"; };
 		93EE49142F54E163002EA052 /* DateFormatHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatHelper.swift; sourceTree = "<group>"; };
+		93EE491A2F556CAC002EA052 /* CentrifugoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentrifugoService.swift; sourceTree = "<group>"; };
+		93EE491C2F556CC2002EA052 /* CentrifugoModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentrifugoModels.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -380,6 +384,8 @@
 		93EE48F92F54975E002EA052 /* NetworkService */ = {
 			isa = PBXGroup;
 			children = (
+				93EE491C2F556CC2002EA052 /* CentrifugoModels.swift */,
+				93EE491A2F556CAC002EA052 /* CentrifugoService.swift */,
 				93EE49122F54E0B1002EA052 /* ChatService.swift */,
 				93EE49102F54E00D002EA052 /* ChatAPIModels.swift */,
 				93EE490E2F549893002EA052 /* ServiceAssembly.swift */,
@@ -512,11 +518,13 @@
 				93EE49132F54E0B3002EA052 /* ChatService.swift in Sources */,
 				93EE49072F549833002EA052 /* TokenManager.swift in Sources */,
 				93EE48D52F547F11002EA052 /* ChatViewController.swift in Sources */,
+				93EE491B2F556CAD002EA052 /* CentrifugoService.swift in Sources */,
 				93EE48E02F547FB6002EA052 /* ChatPresenter.swift in Sources */,
 				93EE489F2F536E31002EA052 /* AuthorizationViewController.swift in Sources */,
 				93EE48EC2F5489A1002EA052 /* AppBuilder.swift in Sources */,
 				93EE48DC2F547F88002EA052 /* ChatEmptyStateView.swift in Sources */,
 				93EE48F12F548A01002EA052 /* AuthCoordinator.swift in Sources */,
+				93EE491D2F556CC4002EA052 /* CentrifugoModels.swift in Sources */,
 				93EE490B2F54986A002EA052 /* AuthService.swift in Sources */,
 				93EE49032F5497F1002EA052 /* KeychainService.swift in Sources */,
 				93EE48DE2F547FA1002EA052 /* MessageInputView.swift in Sources */,

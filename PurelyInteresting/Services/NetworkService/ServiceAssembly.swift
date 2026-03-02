@@ -44,6 +44,11 @@ final class ServiceAssembly {
         apiClient: apiClient
     )
     
+    /// Создаёт новый экземпляр для каждого чата
+    func makeCentrifugoService() -> CentrifugoServiceProtocol {
+        CentrifugoService()
+    }
+    
     // MARK: - Initializers
     
     private init() {}
