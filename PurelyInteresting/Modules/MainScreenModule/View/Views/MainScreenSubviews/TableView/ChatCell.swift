@@ -52,7 +52,7 @@ final class ChatCell: UITableViewCell {
     
     private let usernameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .semibold)
+        label.font = .roboto(.regular, size: 16)
         label.textColor = .white
         label.setContentCompressionResistancePriority(
             .defaultLow, for: .horizontal
@@ -74,7 +74,7 @@ final class ChatCell: UITableViewCell {
     /// "Отлично · 5 мин." — lastMessage + время в одной строке
     private let subtitleLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 14, weight: .regular)
+        label.font = .roboto(.regular, size: 14)
         label.textColor = .textSecondary
         label.lineBreakMode = .byTruncatingTail
         label.setContentCompressionResistancePriority(
@@ -97,7 +97,7 @@ final class ChatCell: UITableViewCell {
     /// Бейдж непрочитанных сообщений
     private let unreadBadge: PaddedLabel = {
         let label = PaddedLabel()
-        label.font = .systemFont(ofSize: 13, weight: .bold)
+        label.font = .roboto(.medium, size: 14)
         label.textColor = .white
         label.textAlignment = .center
         label.backgroundColor = .bgAction

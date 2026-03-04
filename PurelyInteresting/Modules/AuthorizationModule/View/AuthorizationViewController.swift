@@ -37,7 +37,7 @@ final class AuthorizationViewController: UIViewController {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = .title
-        label.font = .systemFont(ofSize: 24, weight: .bold)
+        label.font = .roboto(.medium, size: 24)
         label.textColor = .white
         label.textAlignment = .center
         
@@ -47,7 +47,7 @@ final class AuthorizationViewController: UIViewController {
     private let subtitleLabel: UILabel = {
         let label = UILabel()
         label.text = .subtitle
-        label.font = .systemFont(ofSize: 16, weight: .regular)
+        label.font = .roboto(.regular, size: 16)
         label.textColor = .textSecondary
         label.textAlignment = .center
         label.numberOfLines = 0
@@ -59,7 +59,7 @@ final class AuthorizationViewController: UIViewController {
         let button = UIButton(type: .system)
         button.setTitle(.loginButton, for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
+        button.titleLabel?.font = .roboto(.regular, size: 16)
         button.backgroundColor = .bgAction
         button.layer.cornerRadius = .buttonCornerRadius
         
@@ -70,7 +70,7 @@ final class AuthorizationViewController: UIViewController {
         let button = UIButton(type: .system)
         button.setTitle(.registerButton, for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
+        button.titleLabel?.font = .roboto(.regular, size: 16)
         button.backgroundColor = .bgActionSecondary
         button.layer.cornerRadius = .buttonCornerRadius
         
@@ -83,7 +83,7 @@ final class AuthorizationViewController: UIViewController {
         label.textAlignment = .center
         label.text = .policyText
         label.textColor = .textSecondary
-        label.font = .systemFont(ofSize: 12, weight: .semibold)
+        label.font = .roboto(.regular, size: 12)
         
         return label
     }()
@@ -98,7 +98,7 @@ final class AuthorizationViewController: UIViewController {
     
     private let statusLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 14, weight: .medium)
+        label.font = .roboto(.regular, size: 12)
         label.textColor = .textSecondary
         label.textAlignment = .center
         label.numberOfLines = 0

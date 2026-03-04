@@ -37,7 +37,7 @@ final class MessageInputView: UIView {
     
     let messageTextField: UITextField = {
         let textField = UITextField()
-        textField.font = .systemFont(ofSize: 16, weight: .regular)
+        textField.font = .roboto(.regular, size: 14)
         textField.textColor = .white
         textField.attributedPlaceholder = NSAttributedString(
             string: .placeholder,

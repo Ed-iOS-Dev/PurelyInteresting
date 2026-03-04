@@ -25,7 +25,7 @@ final class ChatEmptyStateView: UIView {
     
     private let usernameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 18, weight: .bold)
+        label.font = .roboto(.medium, size: 20)
         label.textColor = .white
         label.textAlignment = .center
         
@@ -34,7 +34,7 @@ final class ChatEmptyStateView: UIView {
     
     private let subscriptionLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 14, weight: .regular)
+        label.font = .roboto(.regular, size: 14)
         label.textColor = .textSecondary
         label.textAlignment = .center
         
@@ -45,7 +45,7 @@ final class ChatEmptyStateView: UIView {
         let button = UIButton(type: .system)
         button.setTitle(.viewProfileTitle, for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 15, weight: .semibold)
+        button.titleLabel?.font = .roboto(.regular, size: 14)
         button.backgroundColor = .bgActionSecondary
         button.layer.cornerRadius = .buttonCornerRadius
         
@@ -54,7 +54,7 @@ final class ChatEmptyStateView: UIView {
     
     private let registrationDateLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 14, weight: .regular)
+        label.font = .roboto(.regular, size: 16)
         label.textColor = .textSecondary
         label.textAlignment = .center
         
