@@ -25,6 +25,7 @@ final class AppCoordinator: BaseCoordinator {
         if services.tokenManager.isAuthorized {
             goToMainTabBarScreen()
         } else {
+            //goToMainTabBarScreen()
             goToAuthScreen()
         }
     }

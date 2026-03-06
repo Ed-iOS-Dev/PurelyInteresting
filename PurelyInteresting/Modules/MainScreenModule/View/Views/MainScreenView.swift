@@ -29,7 +29,7 @@ final class MainScreenView: UIView {
         config.preferredSymbolConfigurationForImage = imageConfig
         
         button.configuration = config
-        button.titleLabel?.font = .systemFont(ofSize: 18, weight: .bold)
+        button.titleLabel?.font = .roboto(.medium, size: 20)
         
         return button
     }()
@@ -91,11 +91,11 @@ final class MainScreenView: UIView {
         
         let normalAttributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: UIColor.textSecondary,
-            .font: UIFont.systemFont(ofSize: 16, weight: .semibold)
+            .font: UIFont.roboto(.medium, size: 16)
         ]
         let selectedAttributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: UIColor.white,
-            .font: UIFont.systemFont(ofSize: 16, weight: .semibold)
+            .font: UIFont.roboto(.medium, size: 16)
         ]
         
         control.setTitleTextAttributes(normalAttributes, for: .normal)

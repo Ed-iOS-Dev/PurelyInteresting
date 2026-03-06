@@ -42,7 +42,7 @@ final class ChatNavigationBarView: UIView {
     
     private let usernameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .bold)
+        label.font = .roboto(.medium, size: 16)
         label.textColor = .white
         
         return label
@@ -50,7 +50,7 @@ final class ChatNavigationBarView: UIView {
     
     private let statusLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 13, weight: .regular)
+        label.font = .roboto(.regular, size: 14)
         label.textColor = .textSecondary
         
         return label

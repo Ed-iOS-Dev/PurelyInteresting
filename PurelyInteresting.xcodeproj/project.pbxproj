@@ -50,6 +50,9 @@
 		93EE491B2F556CAD002EA052 /* CentrifugoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE491A2F556CAC002EA052 /* CentrifugoService.swift */; };
 		93EE491D2F556CC4002EA052 /* CentrifugoModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE491C2F556CC2002EA052 /* CentrifugoModels.swift */; };
 		93EE491F2F5590CA002EA052 /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EE491E2F5590C8002EA052 /* MessageCell.swift */; };
+		E4A3F8382F587111001CF7BE /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E4A3F8372F587111001CF7BE /* Roboto-Regular.ttf */; };
+		E4A3F83A2F5875A0001CF7BE /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E4A3F8392F5875A0001CF7BE /* Roboto-Medium.ttf */; };
+		E4A3F83C2F587692001CF7BE /* UIFont+RobotoExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A3F83B2F587673001CF7BE /* UIFont+RobotoExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -98,6 +101,9 @@
 		93EE491A2F556CAC002EA052 /* CentrifugoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentrifugoService.swift; sourceTree = "<group>"; };
 		93EE491C2F556CC2002EA052 /* CentrifugoModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentrifugoModels.swift; sourceTree = "<group>"; };
 		93EE491E2F5590C8002EA052 /* MessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
+		E4A3F8372F587111001CF7BE /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
+		E4A3F8392F5875A0001CF7BE /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
+		E4A3F83B2F587673001CF7BE /* UIFont+RobotoExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+RobotoExtensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,6 +162,7 @@
 			children = (
 				93EE48952F536E31002EA052 /* Assets.xcassets */,
 				93EE48AE2F537D69002EA052 /* Colors.xcassets */,
+				E4A3F8352F587017001CF7BE /* Fonts */,
 				93EE48982F536E31002EA052 /* LaunchScreen.storyboard */,
 				93EE48962F536E31002EA052 /* Info.plist */,
 			);
@@ -209,6 +216,7 @@
 		93EE48B02F537F79002EA052 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				E4A3F83B2F587673001CF7BE /* UIFont+RobotoExtensions.swift */,
 				93EE48B22F537F9A002EA052 /* View+Extensions.swift */,
 			);
 			path = Extensions;
@@ -418,6 +426,23 @@
 			path = WebSocketManager;
 			sourceTree = "<group>";
 		};
+		E4A3F8352F587017001CF7BE /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				E4A3F8362F587042001CF7BE /* Roboto */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
+		E4A3F8362F587042001CF7BE /* Roboto */ = {
+			isa = PBXGroup;
+			children = (
+				E4A3F8372F587111001CF7BE /* Roboto-Regular.ttf */,
+				E4A3F8392F5875A0001CF7BE /* Roboto-Medium.ttf */,
+			);
+			path = Roboto;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -479,8 +504,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4A3F83A2F5875A0001CF7BE /* Roboto-Medium.ttf in Resources */,
 				93EE48AF2F537D69002EA052 /* Colors.xcassets in Resources */,
 				93EE48A02F536E31002EA052 /* Assets.xcassets in Resources */,
+				E4A3F8382F587111001CF7BE /* Roboto-Regular.ttf in Resources */,
 				93EE48A22F536E31002EA052 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -507,6 +534,7 @@
 				93EE49052F549806002EA052 /* WebSocketService.swift in Sources */,
 				93EE48D82F547F48002EA052 /* ChatView.swift in Sources */,
 				93EE49012F5497DA002EA052 /* NetworkService.swift in Sources */,
+				E4A3F83C2F587692001CF7BE /* UIFont+RobotoExtensions.swift in Sources */,
 				93EE48B52F537FCF002EA052 /* prepareForAutoLayout.swift in Sources */,
 				93EE48FF2F5497C7002EA052 /* AuthModels.swift in Sources */,
 				93EE48FD2F5497AB002EA052 /* UrlComponents.swift in Sources */,
